@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"strings"
 )
@@ -10,7 +9,6 @@ import (
 func main() {
 	// You can use print statements as follows for debugging, they'll be visible when running tests.
 	fmt.Fprintln(os.Stderr, "Logs from your program will appear here!")
-	l := log.New(os.Stderr, "", 1)
 
 	if len(os.Args) < 3 {
 		fmt.Fprintln(os.Stderr, "Usage: ./your_program.sh tokenize <filename>")
@@ -23,8 +21,6 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Unknown command: %s\n", command)
 		os.Exit(1)
 	}
-
-	// Uncomment this block to pass the first stage
 
 	filename := os.Args[2]
 	fileContents, err := os.ReadFile(filename)
@@ -55,7 +51,7 @@ func main() {
 				fmt.Println(scanned)
 			} else {
 				line := strings.Count(convertedContents[0:index], "\n") + 1
-				l.Printf("[Line %d] Error: Unexpected character: %c", line, char)
+				fmt.Fprintf(os.Stderr, "[Line %d] Error: Unexpected character: %c", line, char)
 				cleanRun = false
 			}
 
