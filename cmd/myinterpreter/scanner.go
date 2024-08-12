@@ -50,9 +50,6 @@ func (s *Scanner) nextToken() (*Token, string) {
 		return newToken(SEMICOLON, ";", nil), ""
 	case '*':
 		return newToken(STAR, "*", nil), ""
-	case '\n':
-		s.currentLine++
-		return newToken(NEWLINE, "\\n", nil), ""
 	case '=':
 		if s.current < len(s.fileContents) && s.fileContents[s.current] == '=' {
 			s.current++
@@ -77,10 +74,28 @@ func (s *Scanner) nextToken() (*Token, string) {
 			return newToken(LESS_EQUAL, "<=", nil), ""
 		}
 		return newToken(LESS, "<", nil), ""
+	case '/':
+		if s.current < len(s.fileContents) && s.fileContents[s.current] == '/' {
+			s.current++ //we have found a comment and should consume until the line ends
+			s.readComment()
+			return s.nextToken()
+		} else {
+			return newToken(SLASH, "/", nil), ""
+		}
+	case '\n':
+		s.currentLine++
+		return newToken(NEWLINE, "", nil), ""
 	default:
 		err := fmt.Sprintf("[line %d] Error: Unexpected character: %c\n", s.currentLine, currToken)
 		return nil, err
 	}
+}
+
+func (s *Scanner) readComment() {
+	for ; s.fileContents[s.current] != '\n'; s.current++ {
+		//do nothing until comment is done
+	}
+	s.current++
 }
 
 type TokenType int
@@ -106,6 +121,7 @@ const (
 	LESS_EQUAL
 	GREATER
 	GREATER_EQUAL
+	SLASH
 )
 
 type Token struct {
@@ -120,7 +136,7 @@ func newToken(t TokenType, lexeme string, literal interface{}) *Token {
 
 func (t TokenType) String() string {
 	return [...]string{"EOF", "LEFT_PAREN", "RIGHT_PAREN", "LEFT_BRACE", "RIGHT_BRACE", "COMMA", "DOT", "PLUS", "MINUS",
-		"SEMICOLON", "STAR", "NEWLINE", "EQUAL", "EQUAL_EQUAL", "BANG", "BANG_EQUAL", "LESS", "LESS_EQUAL", "GREATER", "GREATER_EQUAL"}[t]
+		"SEMICOLON", "STAR", "NEWLINE", "EQUAL", "EQUAL_EQUAL", "BANG", "BANG_EQUAL", "LESS", "LESS_EQUAL", "GREATER", "GREATER_EQUAL", "SLASH"}[t]
 }
 
 func (t *Token) String() string {
