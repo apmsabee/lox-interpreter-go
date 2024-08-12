@@ -51,7 +51,7 @@ func main() {
 				fmt.Println(scanned)
 			} else {
 				line := strings.Count(convertedContents[0:index], "\n") + 1
-				fmt.Fprintf(os.Stderr, "[Line %d] Error: Unexpected character: %c\n", line, char)
+				fmt.Fprintf(os.Stderr, "[line %d] Error: Unexpected character: %c\n", line, char)
 				cleanRun = false
 			}
 
