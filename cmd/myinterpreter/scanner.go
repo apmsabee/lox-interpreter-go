@@ -24,6 +24,7 @@ func newScanner(filename string) *Scanner {
 }
 
 func (s *Scanner) nextToken() (*Token, string) {
+	fmt.Print("current: " + (string)(s.current))
 	if s.current >= len(s.fileContents) {
 		return newToken(EOF, "", nil), ""
 	}
