@@ -18,9 +18,7 @@ func main() {
 
 	scanner := newScanner(config.filename)
 
-	cleanRun := true
-
-	for i := scanner.current; i <= len(scanner.fileContents); i++ {
+	for scanner.current <= len(scanner.fileContents) {
 		if token, errMsg := scanner.nextToken(); errMsg == "" {
 			if token != nil {
 				fmt.Println(token)
@@ -30,15 +28,11 @@ func main() {
 			}
 		} else {
 			fmt.Fprint(os.Stderr, errMsg)
-			cleanRun = false
+			fmt.Print(errMsg)
 		}
 	}
 
-	if cleanRun {
-		os.Exit(0)
-	} else {
-		os.Exit(65)
-	}
+	os.Exit(scanner.exitCode)
 }
 
 func getConfig() (config Config) {

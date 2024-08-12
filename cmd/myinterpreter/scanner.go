@@ -20,7 +20,7 @@ func newScanner(filename string) *Scanner {
 		os.Exit(1)
 	}
 
-	return &Scanner{fileContents: file, currentLine: 1}
+	return &Scanner{fileContents: file, currentLine: 1, exitCode: 0}
 }
 
 func (s *Scanner) nextToken() (*Token, string) {
@@ -90,6 +90,7 @@ func (s *Scanner) nextToken() (*Token, string) {
 		return nil, ""
 	default:
 		err := fmt.Sprintf("[line %d] Error: Unexpected character: %c\n", s.currentLine, currToken)
+		s.exitCode = 65
 		return nil, err
 	}
 }
