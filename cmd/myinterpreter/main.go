@@ -30,24 +30,25 @@ func main() {
 		os.Exit(1)
 	}
 
+	convertedContents := (string)(fileContents)
+
 	if len(fileContents) > 0 {
-		for i := 0; i < len(fileContents); i++ {
-			readChar(fileContents[i])
-		}
-		fmt.Println("EOF  null")
+		readChar(convertedContents)
 	} else {
 		fmt.Println("EOF  null") // Placeholder, remove this line when implementing the scanner
 	}
 }
 
-func readChar(x byte) {
-	switch (string)(x) {
+func readChar(fileContents string) {
+	for _, char := range fileContents {
+		switch char {
+		case '(':
+			fmt.Println("LEFT_PAREN ( null")
 
-	case "(":
-		fmt.Println("LEFT_PAREN ( null")
+		case ')':
+			fmt.Println("RIGHT_PAREN ) null")
 
-	case ")":
-		fmt.Println("RIGHT_PAREN ) null")
-
+		}
 	}
+	fmt.Println("EOF  null")
 }
