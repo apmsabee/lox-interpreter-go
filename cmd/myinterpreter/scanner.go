@@ -92,7 +92,7 @@ func (s *Scanner) nextToken() (*Token, string) {
 }
 
 func (s *Scanner) readComment() {
-	for ; s.fileContents[s.current] != '\n'; s.current++ {
+	for ; s.current < len(s.fileContents) && s.fileContents[s.current] != '\n'; s.current++ {
 		//do nothing until comment is done
 	}
 }
