@@ -88,7 +88,7 @@ func (s *Scanner) nextToken() (*Token, string) {
 		s.currentLine++
 		return nil, ""
 	case ' ', '\r', '\t':
-		s.current++
+		//s.current++
 		return nil, ""
 	default:
 		err := fmt.Sprintf("[line %d] Error: Unexpected character: %c\n", s.currentLine, currToken)
