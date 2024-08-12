@@ -31,8 +31,24 @@ func main() {
 	}
 
 	if len(fileContents) > 0 {
-		panic("Scanner not implemented")
+		for i := 0; i < len(fileContents); i++ {
+			readChar(fileContents[i])
+		}
 	} else {
 		fmt.Println("EOF  null") // Placeholder, remove this line when implementing the scanner
+	}
+}
+
+func readChar(x byte) {
+	switch (string)(x) {
+
+	case "(":
+		fmt.Println("LEFT_PAREN ( null")
+
+	case ")":
+		fmt.Println("RIGHT_PAREN ) null")
+
+	case "":
+		fmt.Println("EOF  null")
 	}
 }
