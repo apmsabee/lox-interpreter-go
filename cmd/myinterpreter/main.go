@@ -34,6 +34,7 @@ func main() {
 		for i := 0; i < len(fileContents); i++ {
 			readChar(fileContents[i])
 		}
+		fmt.Println("EOF  null")
 	} else {
 		fmt.Println("EOF  null") // Placeholder, remove this line when implementing the scanner
 	}
@@ -48,7 +49,5 @@ func readChar(x byte) {
 	case ")":
 		fmt.Println("RIGHT_PAREN ) null")
 
-	case "":
-		fmt.Println("EOF  null")
 	}
 }
