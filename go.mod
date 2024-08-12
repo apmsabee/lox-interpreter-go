@@ -9,5 +9,3 @@
 module github.com/codecrafters-io/interpreter-starter-go
 
 go 1.22
-
-require golang.org/x/text v0.17.0
