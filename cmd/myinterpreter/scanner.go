@@ -24,12 +24,10 @@ func newScanner(filename string) *Scanner {
 }
 
 func (s *Scanner) nextToken() (*Token, string) {
-	fmt.Printf("current: %d\n", s.current)
 	if s.current >= len(s.fileContents) {
 		return newToken(EOF, "", nil), ""
 	}
 	currToken := s.fileContents[s.current]
-	fmt.Printf("currentToken: %v\n", currToken)
 	s.current++
 	switch currToken {
 	case '(':
@@ -88,7 +86,6 @@ func (s *Scanner) nextToken() (*Token, string) {
 		s.currentLine++
 		return nil, ""
 	case ' ', '\r', '\t':
-		//s.current++
 		return nil, ""
 	default:
 		err := fmt.Sprintf("[line %d] Error: Unexpected character: %c\n", s.currentLine, currToken)
