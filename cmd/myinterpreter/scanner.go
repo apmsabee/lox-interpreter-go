@@ -59,6 +59,12 @@ func (s *Scanner) nextToken() (*Token, string) {
 			return newToken(EQUAL_EQUAL, "==", nil), ""
 		}
 		return newToken(EQUAL, "=", nil), ""
+	case '!':
+		if s.current < len(s.fileContents) && s.fileContents[s.current] == '=' {
+			s.current++
+			return newToken(BANG_EQUAL, "!=", nil), ""
+		}
+		return newToken(BANG, "!", nil), ""
 	default:
 		err := fmt.Sprintf("[line %d] Error: Unexpected character: %c\n", s.currentLine, currToken)
 		return nil, err
@@ -82,6 +88,8 @@ const (
 	NEWLINE
 	EQUAL
 	EQUAL_EQUAL
+	BANG
+	BANG_EQUAL
 )
 
 type Token struct {
@@ -95,7 +103,8 @@ func newToken(t TokenType, lexeme string, literal interface{}) *Token {
 }
 
 func (t TokenType) String() string {
-	return [...]string{"EOF", "LEFT_PAREN", "RIGHT_PAREN", "LEFT_BRACE", "RIGHT_BRACE", "COMMA", "DOT", "PLUS", "MINUS", "SEMICOLON", "STAR", "NEWLINE", "EQUAL", "EQUAL_EQUAL"}[t]
+	return [...]string{"EOF", "LEFT_PAREN", "RIGHT_PAREN", "LEFT_BRACE", "RIGHT_BRACE", "COMMA", "DOT", "PLUS", "MINUS",
+		"SEMICOLON", "STAR", "NEWLINE", "EQUAL", "EQUAL_EQUAL", "BANG", "BANG_EQUAL"}[t]
 }
 
 func (t *Token) String() string {
