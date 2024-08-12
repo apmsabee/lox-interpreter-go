@@ -54,7 +54,7 @@ func (s *Scanner) nextToken() (*Token, string) {
 		s.currentLine++
 		return newToken(NEWLINE, "\\n", nil), ""
 	case '=':
-		if s.current <= len(s.fileContents) && s.fileContents[s.current] == '=' {
+		if s.current < len(s.fileContents) && s.fileContents[s.current] == '=' {
 			s.current++
 			return newToken(EQUAL_EQUAL, "==", nil), ""
 		}
