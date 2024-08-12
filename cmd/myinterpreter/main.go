@@ -40,6 +40,7 @@ func main() {
 		',': "COMMA , null",
 		'+': "PLUS + null",
 		'-': "MINUS - null",
+		';': "SEMICOLON ; null",
 	}
 	convertedContents := (string)(fileContents)
 
