@@ -37,7 +37,7 @@ func (s *Scanner) nextToken() (*Token, string) {
 	case '{':
 		return newToken(LEFT_BRACE, "{", nil), ""
 	case '}':
-		return newToken(RIGHT_BRACE, "]", nil), ""
+		return newToken(RIGHT_BRACE, "}", nil), ""
 	case ',':
 		return newToken(COMMA, ",", nil), ""
 	case '.':
