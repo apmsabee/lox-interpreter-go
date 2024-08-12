@@ -95,7 +95,6 @@ func (s *Scanner) readComment() {
 	for ; s.fileContents[s.current] != '\n'; s.current++ {
 		//do nothing until comment is done
 	}
-	s.current++
 }
 
 type TokenType int
