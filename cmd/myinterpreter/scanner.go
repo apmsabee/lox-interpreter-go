@@ -84,7 +84,7 @@ func (s *Scanner) nextToken() (*Token, string) {
 		}
 	case '\n':
 		s.currentLine++
-		return newToken(NEWLINE, "", nil), ""
+		return s.nextToken()
 	case ' ':
 		s.current++
 		return s.nextToken()
@@ -117,7 +117,6 @@ const (
 	MINUS
 	SEMICOLON
 	STAR
-	NEWLINE
 	EQUAL
 	EQUAL_EQUAL
 	BANG
@@ -141,7 +140,7 @@ func newToken(t TokenType, lexeme string, literal interface{}) *Token {
 
 func (t TokenType) String() string {
 	return [...]string{"EOF", "LEFT_PAREN", "RIGHT_PAREN", "LEFT_BRACE", "RIGHT_BRACE", "COMMA", "DOT", "PLUS", "MINUS",
-		"SEMICOLON", "STAR", "NEWLINE", "EQUAL", "EQUAL_EQUAL", "BANG", "BANG_EQUAL", "LESS", "LESS_EQUAL", "GREATER", "GREATER_EQUAL", "SLASH"}[t]
+		"SEMICOLON", "STAR", "EQUAL", "EQUAL_EQUAL", "BANG", "BANG_EQUAL", "LESS", "LESS_EQUAL", "GREATER", "GREATER_EQUAL", "SLASH"}[t]
 }
 
 func (t *Token) String() string {
