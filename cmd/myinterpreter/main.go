@@ -20,7 +20,7 @@ func main() {
 
 	cleanRun := true
 
-	for i := 0; i <= len(scanner.fileContents); i++ {
+	for i := 0; i < len(scanner.fileContents); i++ {
 		if token, errMsg := scanner.nextToken(); errMsg == "" {
 			fmt.Println(token)
 		} else {
