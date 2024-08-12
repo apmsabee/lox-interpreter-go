@@ -39,6 +39,7 @@ func main() {
 		'.': "DOT . null",
 		',': "COMMA , null",
 		'+': "PLUS + null",
+		'-': "MINUS - null",
 	}
 	convertedContents := (string)(fileContents)
 
