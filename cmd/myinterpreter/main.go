@@ -30,30 +30,20 @@ func main() {
 		os.Exit(1)
 	}
 
+	tokens := map[rune]string{
+		'(': "LEFT_PAREN ( null",
+		')': "RIGHT_PAREN ) null",
+		'{': "LEFT_BRACE { null",
+		'}': "RIGHT_BRACE } null",
+	}
 	convertedContents := (string)(fileContents)
 
-	if len(fileContents) > 0 {
-		readChar(convertedContents)
+	if len(convertedContents) > 0 {
+		for _, char := range convertedContents {
+			fmt.Println(tokens[char])
+		}
+		fmt.Println("EOF  null")
 	} else {
 		fmt.Println("EOF  null") // Placeholder, remove this line when implementing the scanner
 	}
-}
-
-func readChar(fileContents string) {
-	for _, char := range fileContents {
-		switch char {
-		case '(':
-			fmt.Println("LEFT_PAREN ( null")
-
-		case ')':
-			fmt.Println("RIGHT_PAREN ) null")
-
-		case '{':
-			fmt.Println("LEFT_BRACE { null")
-
-		case '}':
-			fmt.Println("RIGHT_BRACE } null")
-		}
-	}
-	fmt.Println("EOF  null")
 }
