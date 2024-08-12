@@ -78,17 +78,16 @@ func (s *Scanner) nextToken() (*Token, string) {
 		if s.current < len(s.fileContents) && s.fileContents[s.current] == '/' {
 			s.current++ //we have found a comment and should consume until the line ends
 			s.readComment()
-			return s.nextToken()
+			return nil, ""
 		} else {
 			return newToken(SLASH, "/", nil), ""
 		}
 	case '\n':
 		s.currentLine++
-		return s.nextToken()
+		return nil, ""
 	case ' ', '\r', '\t':
 		s.current++
-		fmt.Print(s.current)
-		return s.nextToken()
+		return nil, ""
 	default:
 		err := fmt.Sprintf("[line %d] Error: Unexpected character: %c\n", s.currentLine, currToken)
 		return nil, err
