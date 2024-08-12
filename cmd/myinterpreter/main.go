@@ -48,6 +48,11 @@ func readChar(fileContents string) {
 		case ')':
 			fmt.Println("RIGHT_PAREN ) null")
 
+		case '{':
+			fmt.Println("LEFT_BRACE ( null")
+
+		case '}':
+			fmt.Println("RIGHT_BRACE ) null")
 		}
 	}
 	fmt.Println("EOF  null")
