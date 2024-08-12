@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -45,8 +46,14 @@ func main() {
 	convertedContents := (string)(fileContents)
 
 	if len(convertedContents) > 0 {
-		for _, char := range convertedContents {
-			fmt.Println(tokens[char])
+		for index, char := range convertedContents {
+			if scanned, validFile := tokens[char]; validFile {
+				fmt.Println(scanned)
+			} else {
+				line := strings.Count(convertedContents[0:index], "\n") + 1
+				fmt.Fprintf(os.Stderr, "[Line %d] Error: Unexpected character: %c", line, char)
+			}
+
 		}
 		fmt.Println("EOF  null")
 	} else {
