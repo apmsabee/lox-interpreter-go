@@ -28,7 +28,6 @@ func main() {
 			}
 		} else {
 			fmt.Fprint(os.Stderr, errMsg)
-			fmt.Print(errMsg)
 		}
 	}
 
