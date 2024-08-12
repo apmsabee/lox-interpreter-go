@@ -44,7 +44,7 @@ func main() {
 		';': "SEMICOLON ; null",
 	}
 	convertedContents := (string)(fileContents)
-
+	cleanRun := true
 	if len(convertedContents) > 0 {
 		for index, char := range convertedContents {
 			if scanned, validFile := tokens[char]; validFile {
@@ -52,11 +52,17 @@ func main() {
 			} else {
 				line := strings.Count(convertedContents[0:index], "\n") + 1
 				fmt.Fprintf(os.Stderr, "[Line %d] Error: Unexpected character: %c", line, char)
+				cleanRun = false
 			}
 
 		}
 		fmt.Println("EOF  null")
 	} else {
 		fmt.Println("EOF  null") // Placeholder, remove this line when implementing the scanner
+	}
+	if cleanRun {
+		os.Exit(0)
+	} else {
+		os.Exit(65)
 	}
 }
