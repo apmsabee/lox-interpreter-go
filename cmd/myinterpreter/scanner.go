@@ -87,7 +87,7 @@ func (s *Scanner) nextToken() (*Token, string) {
 		return s.nextToken()
 	case ' ', '\r', '\t':
 		s.current++
-		fmt.Print(s.fileContents[s.current])
+		fmt.Print(s.current)
 		return s.nextToken()
 	default:
 		err := fmt.Sprintf("[line %d] Error: Unexpected character: %c\n", s.currentLine, currToken)
