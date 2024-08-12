@@ -29,6 +29,7 @@ func (s *Scanner) nextToken() (*Token, string) {
 		return newToken(EOF, "", nil), ""
 	}
 	currToken := s.fileContents[s.current]
+	fmt.Printf("currentToken: %v\n", currToken)
 	s.current++
 	switch currToken {
 	case '(':
