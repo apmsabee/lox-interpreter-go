@@ -23,7 +23,7 @@ func newScanner(filename string) *Scanner {
 	return &Scanner{fileContents: file, currentLine: 1}
 }
 
-func (s Scanner) nextToken() (*Token, string) {
+func (s *Scanner) nextToken() (*Token, string) {
 	if s.current >= len(s.fileContents) {
 		return newToken(EOF, "", nil), ""
 	}
