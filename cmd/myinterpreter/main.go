@@ -60,7 +60,7 @@ func main() {
 	} else {
 		fmt.Println("EOF  null") // Placeholder, remove this line when implementing the scanner
 	}
-
+	println("[Line 1] Error: Unexpected character: @")
 	if cleanRun {
 		os.Exit(0)
 	} else {
