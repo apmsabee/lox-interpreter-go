@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"strings"
 )
@@ -9,6 +10,7 @@ import (
 func main() {
 	// You can use print statements as follows for debugging, they'll be visible when running tests.
 	fmt.Fprintln(os.Stderr, "Logs from your program will appear here!")
+	l := log.New(os.Stderr, "", 1)
 
 	if len(os.Args) < 3 {
 		fmt.Fprintln(os.Stderr, "Usage: ./your_program.sh tokenize <filename>")
@@ -53,7 +55,7 @@ func main() {
 				fmt.Println(scanned)
 			} else {
 				line := strings.Count(convertedContents[0:index], "\n") + 1
-				println("[Line %d] Error: Unexpected character: %c", line, char)
+				l.Printf("[Line %d] Error: Unexpected character: %c", line, char)
 				cleanRun = false
 			}
 
