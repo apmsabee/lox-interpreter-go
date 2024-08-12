@@ -30,8 +30,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Println(fileContents)
-
 	if len(fileContents) > 0 {
 		panic("Scanner not implemented")
 	} else {
