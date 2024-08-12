@@ -20,9 +20,12 @@ func main() {
 
 	cleanRun := true
 
-	for i := 0; i < len(scanner.fileContents); i++ {
+	for i := scanner.current; i < len(scanner.fileContents); i++ {
 		if token, errMsg := scanner.nextToken(); errMsg == "" {
 			fmt.Println(token)
+			if token.String() == "EOF  null" {
+				break
+			}
 		} else {
 			fmt.Fprint(os.Stderr, errMsg)
 			cleanRun = false
