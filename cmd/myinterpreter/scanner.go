@@ -82,6 +82,14 @@ func (s *Scanner) nextToken() (*Token, string) {
 		} else {
 			return newToken(SLASH, "/", nil), ""
 		}
+	case '"':
+		if literal, err := s.readString(); err {
+			errMsg := fmt.Sprintf("[line %d] Error: Unterminated string.\n", s.currentLine)
+			return nil, errMsg
+		} else {
+			return newToken(STRING, literal, literal), ""
+		}
+
 	case '\n':
 		s.currentLine++
 		return nil, ""
@@ -92,6 +100,26 @@ func (s *Scanner) nextToken() (*Token, string) {
 		s.exitCode = 65
 		return nil, err
 	}
+}
+
+func (s *Scanner) readString() (literal string, err bool) {
+	terminated := false
+	for s.current < len(s.fileContents) && !terminated {
+		currentChar := s.fileContents[s.current]
+		if currentChar == '"' { //we have reached the end of the string literal
+			terminated = true
+		} else {
+			if currentChar == '\n' {
+				s.currentLine++
+			}
+			literal += (string)(currentChar) //add the character to the end of the string and proceed
+		}
+		s.current++
+	}
+	if !terminated { //don't return a string at all and report the error
+		return "", true
+	}
+	return literal, false
 }
 
 func (s *Scanner) readComment() {
@@ -123,6 +151,7 @@ const (
 	GREATER
 	GREATER_EQUAL
 	SLASH
+	STRING
 )
 
 type Token struct {
@@ -137,7 +166,8 @@ func newToken(t TokenType, lexeme string, literal interface{}) *Token {
 
 func (t TokenType) String() string {
 	return [...]string{"EOF", "LEFT_PAREN", "RIGHT_PAREN", "LEFT_BRACE", "RIGHT_BRACE", "COMMA", "DOT", "PLUS", "MINUS",
-		"SEMICOLON", "STAR", "EQUAL", "EQUAL_EQUAL", "BANG", "BANG_EQUAL", "LESS", "LESS_EQUAL", "GREATER", "GREATER_EQUAL", "SLASH"}[t]
+		"SEMICOLON", "STAR", "EQUAL", "EQUAL_EQUAL", "BANG", "BANG_EQUAL", "LESS", "LESS_EQUAL",
+		"GREATER", "GREATER_EQUAL", "SLASH", "STRING"}[t]
 }
 
 func (t *Token) String() string {
