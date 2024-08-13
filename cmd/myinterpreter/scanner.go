@@ -104,7 +104,10 @@ func (s *Scanner) nextToken() (*Token, string) {
 }
 
 func (s *Scanner) readString() (literal string, err bool) {
+
 	terminated := false
+	literal += "\""
+
 	for s.current < len(s.fileContents) && !terminated {
 		currentChar := s.fileContents[s.current]
 		if currentChar == '"' { //we have reached the end of the string literal
@@ -117,9 +120,12 @@ func (s *Scanner) readString() (literal string, err bool) {
 		}
 		s.current++
 	}
+
 	if !terminated { //don't return a string at all and report the error
 		return "", true
 	}
+
+	literal += "\""
 	return literal, false
 }
 
@@ -172,16 +178,11 @@ func (t TokenType) String() string {
 }
 
 func (t *Token) String() string {
-	var s string
-	if t.Type == STRING {
-		s = fmt.Sprintf("%s \"%s\" %v", t.Type, t.lexeme, t.literal)
+	s := fmt.Sprintf("%s %s ", t.Type, t.lexeme)
+	if t.literal != nil {
+		s += fmt.Sprintf("%v", t.literal)
 	} else {
-		s = fmt.Sprintf("%s %s ", t.Type, t.lexeme)
-		if t.literal != nil {
-			s += fmt.Sprintf("%v", t.literal)
-		} else {
-			s += "null"
-		}
+		s += "null"
 	}
 	return s
 }
