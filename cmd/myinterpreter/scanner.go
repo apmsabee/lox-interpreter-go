@@ -85,6 +85,7 @@ func (s *Scanner) nextToken() (*Token, string) {
 	case '"':
 		if literal, err := s.readString(); err {
 			errMsg := fmt.Sprintf("[line %d] Error: Unterminated string.\n", s.currentLine)
+			s.exitCode = 65
 			return nil, errMsg
 		} else {
 			return newToken(STRING, literal, literal), ""
