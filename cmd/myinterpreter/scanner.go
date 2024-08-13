@@ -171,7 +171,7 @@ func (t TokenType) String() string {
 }
 
 func (t *Token) String() string {
-	s := fmt.Sprintf("%s %s ", t.Type, t.lexeme)
+	s := fmt.Sprintf("%s \"%s\" ", t.Type, t.lexeme)
 	if t.literal != nil {
 		s += fmt.Sprintf("%v", t.literal)
 	} else {
