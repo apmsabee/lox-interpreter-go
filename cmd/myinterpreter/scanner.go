@@ -144,9 +144,10 @@ func (s *Scanner) readNumber() (literal string) {
 	}
 
 	if token == '.' && isDigit(s.peekNext()) {
-		fmt.Printf("In second token if statement")
+		s.current++
+		token = s.fileContents[s.current]
 		for isDigit(token) {
-			fmt.Printf("In second token loop")
+			fmt.Printf("In second token loop\n")
 			s.current++
 			token = s.fileContents[s.current]
 		}
