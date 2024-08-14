@@ -143,15 +143,12 @@ func (s *Scanner) readNumber() (literal string) {
 		token = s.fileContents[s.current]
 	}
 
-	fmt.Printf("Token when transitioning out of first loop: %s\n", (string)(token))
-	fmt.Printf("Next Token when transitioning out of first loop: %s\n", (string)(s.peekNext()))
-	fmt.Printf("Evaluation of boolean statement for second loop: %v\n", (token == '.' && isDigit(s.peekNext())))
-
 	if token == '.' && isDigit(s.peekNext()) {
+		fmt.Printf("In second token if statement")
 		for isDigit(token) {
+			fmt.Printf("In second token loop")
 			s.current++
 			token = s.fileContents[s.current]
-			fmt.Print("In second token loop")
 		}
 	}
 
