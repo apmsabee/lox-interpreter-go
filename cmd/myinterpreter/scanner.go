@@ -141,8 +141,9 @@ func (s *Scanner) readNumber() (literal string) {
 	for isDigit(token) {
 		s.current++
 		token = s.fileContents[s.current]
-		fmt.Print("In first token loop")
 	}
+
+	fmt.Printf("Token when transitioning out of first loop: %v\n", token)
 
 	if token == '.' && isDigit(s.peekNext()) {
 		for isDigit(token) {
