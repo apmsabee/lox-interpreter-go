@@ -153,9 +153,10 @@ func reservedCheck(identifier string) (tokentype TokenType, reserved bool) {
 		"var":    VAR,
 		"while":  WHILE,
 	}
+	fmt.Println(reservedWords["this"])
 	if token, exists := reservedWords[identifier]; exists {
 		fmt.Printf("In reservedCheck, have identified that the token is a reserved word\n")
-		fmt.Printf("token: %s", token)
+		fmt.Printf("token: %s\n", token)
 		return token, true
 	}
 	return IDENTIFIER, false
