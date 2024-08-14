@@ -144,7 +144,7 @@ func (s *Scanner) readNumber() (literal string) {
 	}
 
 	fmt.Printf("Token when transitioning out of first loop: %s\n", (string)(token))
-
+	fmt.Printf("Next Token when transitioning out of first loop: %s\n", (string)(s.peekNext()))
 	if token == '.' && isDigit(s.peekNext()) {
 		for isDigit(token) {
 			s.current++
