@@ -106,12 +106,37 @@ func (s *Scanner) nextToken() (*Token, string) {
 				floatVal += ".0"
 			}
 			return newToken(NUMBER, val, floatVal), ""
+		} else if isAlpha(currToken) {
+			val := s.identifier()
+			return newToken(IDENTIFIER, val, nil), ""
 		} else {
 			err := fmt.Sprintf("[line %d] Error: Unexpected character: %c\n", s.currentLine, currToken)
 			s.exitCode = 65
 			return nil, err
 		}
 	}
+}
+
+func isAlpha(currToken byte) bool {
+	return (currToken >= 'a' && currToken <= 'z') ||
+		(currToken >= 'A' && currToken <= 'Z') ||
+		currToken == '_'
+}
+
+func isDigit(b byte) bool {
+	return (b >= '0' && b <= '9')
+}
+
+func isAlphaNumeric(b byte) bool {
+	return isAlpha(b) || isDigit(b)
+}
+
+func (s *Scanner) identifier() string {
+	start := s.current - 1
+	for isAlphaNumeric(s.peek()) {
+		s.current++
+	}
+	return (string)(s.fileContents[start:s.current])
 }
 
 func (s *Scanner) readString() (literal string, err bool) {
@@ -169,10 +194,6 @@ func (s *Scanner) peek() byte {
 	}
 }
 
-func isDigit(b byte) bool {
-	return (b >= '0' && b <= '9')
-}
-
 func (s *Scanner) readComment() {
 	for ; s.current < len(s.fileContents) && s.fileContents[s.current] != '\n'; s.current++ {
 		//do nothing until comment is done
@@ -204,6 +225,7 @@ const (
 	SLASH
 	STRING
 	NUMBER
+	IDENTIFIER
 )
 
 type Token struct {
@@ -219,7 +241,7 @@ func newToken(t TokenType, lexeme string, literal interface{}) *Token {
 func (t TokenType) String() string {
 	return [...]string{"EOF", "LEFT_PAREN", "RIGHT_PAREN", "LEFT_BRACE", "RIGHT_BRACE", "COMMA", "DOT", "PLUS", "MINUS",
 		"SEMICOLON", "STAR", "EQUAL", "EQUAL_EQUAL", "BANG", "BANG_EQUAL", "LESS", "LESS_EQUAL",
-		"GREATER", "GREATER_EQUAL", "SLASH", "STRING", "NUMBER"}[t]
+		"GREATER", "GREATER_EQUAL", "SLASH", "STRING", "NUMBER", "IDENTIFIER"}[t]
 }
 
 func (t *Token) String() string {
