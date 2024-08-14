@@ -118,7 +118,7 @@ func (s *Scanner) nextToken() (*Token, string) {
 				interfaceVal += ".0"
 			}
 
-			return newToken(NUMBER, val, val), ""
+			return newToken(NUMBER, val, interfaceVal), ""
 		} else if isAlpha(currToken) {
 			val := s.identifier()
 			return newToken(IDENTIFIER, val, nil), ""
