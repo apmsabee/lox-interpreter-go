@@ -145,7 +145,9 @@ func (s *Scanner) readNumber() (literal string) {
 
 	for isDigit(token) {
 		s.current++
-		token = s.fileContents[s.current]
+		if s.current < len(s.fileContents) { //check if this is correct
+			token = s.fileContents[s.current]
+		}
 	}
 
 	if token == '.' && isDigit(s.peekNext()) {
