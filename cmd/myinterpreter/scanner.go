@@ -115,18 +115,16 @@ func (s *Scanner) nextToken() (*Token, string) {
 }
 
 func (s *Scanner) readString() (literal string, err bool) {
-
+	start := s.current - 1
 	terminated := false
 
 	for s.current < len(s.fileContents) && !terminated {
-		currentChar := s.fileContents[s.current]
-		if currentChar == '"' { //we have reached the end of the string literal
+		if s.peek() == '"' { //we have reached the end of the string literal
 			terminated = true
 		} else {
-			if currentChar == '\n' {
+			if s.peek() == '\n' {
 				s.currentLine++
 			}
-			literal += (string)(currentChar) //add the character to the end of the string and proceed
 		}
 		s.current++
 	}
@@ -135,31 +133,20 @@ func (s *Scanner) readString() (literal string, err bool) {
 		return "", true
 	}
 
-	return literal, false
+	return (string)(s.fileContents[start:s.current]), false
 }
 
 func (s *Scanner) readNumber() (literal string) {
 	start := s.current - 1
-	token := s.fileContents[s.current]
 
-	for s.current < len(s.fileContents) && isDigit(token) {
+	for s.current < len(s.fileContents) && isDigit(s.peek()) {
 		s.current++
-		if s.current < len(s.fileContents) { //check if this is correct
-			token = s.fileContents[s.current]
-		}
 	}
 
-	if token == '.' && isDigit(s.peekNext()) {
-		//consume the decimal place
-		s.current++
-		token = s.fileContents[s.current]
-
-		for s.current < len(s.fileContents) && isDigit(token) {
-			s.current++                          //move to next token
-			if s.current < len(s.fileContents) { //check if this is correct
-				token = s.fileContents[s.current]
-			}
-
+	if s.peek() == '.' && isDigit(s.peekNext()) {
+		s.current++ //consume the decimal place
+		for s.current < len(s.fileContents) && isDigit(s.peek()) {
+			s.current++ //move to next token
 		}
 	}
 
@@ -168,9 +155,17 @@ func (s *Scanner) readNumber() (literal string) {
 
 func (s *Scanner) peekNext() byte {
 	if s.current+1 >= len(s.fileContents) {
-		return ' '
+		return 0
 	} else {
 		return s.fileContents[s.current+1]
+	}
+}
+
+func (s *Scanner) peek() byte {
+	if s.current >= len(s.fileContents) {
+		return 0
+	} else {
+		return s.fileContents[s.current]
 	}
 }
 
