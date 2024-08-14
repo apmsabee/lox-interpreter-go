@@ -115,7 +115,7 @@ func (s *Scanner) nextToken() (*Token, string) {
 }
 
 func (s *Scanner) readString() (literal string, err bool) {
-	start := s.current - 1
+	start := s.current
 	terminated := false
 
 	for s.current < len(s.fileContents) && !terminated {
@@ -133,7 +133,7 @@ func (s *Scanner) readString() (literal string, err bool) {
 		return "", true
 	}
 
-	return (string)(s.fileContents[start:s.current]), false
+	return (string)(s.fileContents[start : s.current-1]), false
 }
 
 func (s *Scanner) readNumber() (literal string) {
