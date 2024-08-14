@@ -149,9 +149,11 @@ func (s *Scanner) readNumber() (literal string) {
 		token = s.fileContents[s.current]
 
 		for s.current < len(s.fileContents) && isDigit(token) {
-			fmt.Printf("Within second for loop, %v out of %v", s.current, len(s.fileContents))
-			s.current++
-			token = s.fileContents[s.current]
+			s.current++                          //move to next token
+			if s.current < len(s.fileContents) { //check if this is correct
+				token = s.fileContents[s.current]
+			}
+
 		}
 	}
 
