@@ -121,6 +121,10 @@ func (s *Scanner) nextToken() (*Token, string) {
 			return newToken(NUMBER, val, interfaceVal), ""
 		} else if isAlpha(currToken) {
 			val := s.identifier()
+			token, exists := reservedWords[val]
+			if exists { //if identifier is a reserved word, return that tokentype instead of identifier tokentype
+				return newToken(token, val, nil), ""
+			}
 			return newToken(IDENTIFIER, val, nil), ""
 		} else {
 			err := fmt.Sprintf("[line %d] Error: Unexpected character: %c\n", s.currentLine, currToken)
@@ -239,7 +243,40 @@ const (
 	STRING
 	NUMBER
 	IDENTIFIER
+	AND
+	CLASS
+	ELSE
+	FALSE
+	FOR
+	IF
+	NIL
+	OR
+	PRINT
+	RETURN
+	SUPER
+	THIS
+	TRUE
+	VAR
+	WHILE
 )
+
+var reservedWords = map[string]TokenType{
+	"and":    AND,
+	"class":  CLASS,
+	"else":   ELSE,
+	"false":  FALSE,
+	"for":    FOR,
+	"if":     IF,
+	"nil":    NIL,
+	"or":     OR,
+	"print":  PRINT,
+	"return": RETURN,
+	"super":  SUPER,
+	"this":   THIS,
+	"true":   TRUE,
+	"var":    VAR,
+	"while":  WHILE,
+}
 
 type Token struct {
 	Type    TokenType
