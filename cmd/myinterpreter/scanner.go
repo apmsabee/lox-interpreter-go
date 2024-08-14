@@ -137,11 +137,12 @@ func (s *Scanner) readString() (literal string, err bool) {
 func (s *Scanner) readNumber() (literal string) {
 	start := s.current
 	for token := s.fileContents[s.current]; isDigit(token); s.current++ {
-
+		fmt.Print("In first token loop")
 	}
 
 	if s.fileContents[s.current] == '.' && isDigit(s.peekNext()) {
 		for token := s.fileContents[s.current]; isDigit(token); s.current++ {
+			fmt.Print("In second token loop")
 		}
 	}
 
