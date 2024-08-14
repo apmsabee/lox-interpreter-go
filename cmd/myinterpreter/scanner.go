@@ -105,7 +105,7 @@ func (s *Scanner) nextToken() (*Token, string) {
 			if !strings.Contains(val, ".") {
 				floatVal += ".0"
 			}
-			return newToken(NUMBER, val, floatVal), ""
+			return newToken(NUMBER, val, val), ""
 		} else if isAlpha(currToken) {
 			val := s.identifier()
 			return newToken(IDENTIFIER, val, nil), ""
@@ -245,11 +245,20 @@ func (t TokenType) String() string {
 }
 
 func (t *Token) String() string {
-	s := fmt.Sprintf("%s %s ", t.Type, t.lexeme)
-	if t.literal != nil {
-		s += fmt.Sprintf("%v", t.literal)
+	var literal string
+	if t.literal == "" {
+		literal = "null"
 	} else {
-		s += "null"
+		switch v := t.literal.(type) {
+		case float64:
+			if v == float64(int(v)) {
+				literal = fmt.Sprintf("%.1f", v) // Ensures 1234.0 for whole numbers
+			} else {
+				literal = fmt.Sprintf("%g", v) // Keeps the precision for non-whole numbers
+			}
+		default:
+			literal = fmt.Sprintf("%v", v)
+		}
 	}
-	return s
+	return fmt.Sprintf("%s %s %s", t.Type, t.lexeme, literal)
 }
