@@ -121,18 +121,44 @@ func (s *Scanner) nextToken() (*Token, string) {
 			return newToken(NUMBER, val, interfaceVal), ""
 		} else if isAlpha(currToken) {
 			val := s.identifier()
-			token, exists := reservedWords[val]
-			if exists { //if identifier is a reserved word, return that tokentype instead of identifier tokentype
-				fmt.Printf("Found identifier, token: %v", token)
-				return newToken(token, val, nil), ""
+			tokenType := IDENTIFIER
+
+			if tokenTypeTwo, reserved := reservedCheck(val); reserved {
+				return newToken(tokenTypeTwo, val, nil), ""
 			}
-			return newToken(IDENTIFIER, val, nil), ""
+			return newToken(tokenType, val, nil), ""
 		} else {
 			err := fmt.Sprintf("[line %d] Error: Unexpected character: %c\n", s.currentLine, currToken)
 			s.exitCode = 65
 			return nil, err
 		}
 	}
+}
+
+func reservedCheck(identifier string) (tokentype TokenType, reserved bool) {
+	reservedWords := map[string]TokenType{
+		"and":    AND,
+		"class":  CLASS,
+		"else":   ELSE,
+		"false":  FALSE,
+		"for":    FOR,
+		"if":     IF,
+		"nil":    NIL,
+		"or":     OR,
+		"print":  PRINT,
+		"return": RETURN,
+		"super":  SUPER,
+		"this":   THIS,
+		"true":   TRUE,
+		"var":    VAR,
+		"while":  WHILE,
+	}
+	if token, exists := reservedWords[identifier]; exists {
+		fmt.Printf("In reservedCheck, have identified that the token is a reserved word\n")
+		fmt.Printf("token: %s", token)
+		return token, true
+	}
+	return IDENTIFIER, false
 }
 
 func isAlpha(currToken byte) bool {
@@ -261,23 +287,23 @@ const (
 	WHILE
 )
 
-var reservedWords = map[string]TokenType{
-	"and":    AND,
-	"class":  CLASS,
-	"else":   ELSE,
-	"false":  FALSE,
-	"for":    FOR,
-	"if":     IF,
-	"nil":    NIL,
-	"or":     OR,
-	"print":  PRINT,
-	"return": RETURN,
-	"super":  SUPER,
-	"this":   THIS,
-	"true":   TRUE,
-	"var":    VAR,
-	"while":  WHILE,
-}
+// var reservedWords = map[string]TokenType{
+// 	"and":    AND,
+// 	"class":  CLASS,
+// 	"else":   ELSE,
+// 	"false":  FALSE,
+// 	"for":    FOR,
+// 	"if":     IF,
+// 	"nil":    NIL,
+// 	"or":     OR,
+// 	"print":  PRINT,
+// 	"return": RETURN,
+// 	"super":  SUPER,
+// 	"this":   THIS,
+// 	"true":   TRUE,
+// 	"var":    VAR,
+// 	"while":  WHILE,
+// }
 
 type Token struct {
 	Type    TokenType
