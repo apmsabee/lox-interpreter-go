@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -100,12 +102,23 @@ func (s *Scanner) nextToken() (*Token, string) {
 		return nil, ""
 	default:
 		if isDigit(currToken) {
+			//need to be able to add 1 point of precision to whole numbers and truncate floating numbers that are .00... to .0
+			//val will be the base return(the entire number, whether it has a decimal place or not)
 			val := s.readNumber()
-			floatVal := val
-			if !strings.Contains(val, ".") {
-				floatVal += ".0"
+			interfaceVal := val
+
+			if strings.Contains(val, ".") { //potentially truncate floating-point values
+				floatVal, _ := strconv.ParseFloat(val, 64) //convert to float
+				if math.Trunc(floatVal) == floatVal {      //dropping the decimal does nothing to the value, therefore all decimal places are 0
+					//reduce to 1 point of precision
+					interfaceVal, _, _ = strings.Cut(interfaceVal, ".") //take only the integer portion of the number
+					interfaceVal += ".0"                                //append one degree of precision
+				}
+			} else {
+				interfaceVal += ".0"
 			}
-			return newToken(NUMBER, val, floatVal), ""
+
+			return newToken(NUMBER, val, val), ""
 		} else if isAlpha(currToken) {
 			val := s.identifier()
 			return newToken(IDENTIFIER, val, nil), ""
