@@ -89,7 +89,8 @@ func (s *Scanner) nextToken() (*Token, string) {
 			s.exitCode = 65
 			return nil, errMsg
 		} else {
-			return newToken(STRING, literal, literal), ""
+			lexeme := "\"" + literal + "\""
+			return newToken(STRING, lexeme, literal), ""
 		}
 
 	case '\n':
@@ -116,7 +117,6 @@ func (s *Scanner) nextToken() (*Token, string) {
 func (s *Scanner) readString() (literal string, err bool) {
 
 	terminated := false
-	literal += "\""
 
 	for s.current < len(s.fileContents) && !terminated {
 		currentChar := s.fileContents[s.current]
@@ -135,7 +135,6 @@ func (s *Scanner) readString() (literal string, err bool) {
 		return "", true
 	}
 
-	literal += "\""
 	return literal, false
 }
 
