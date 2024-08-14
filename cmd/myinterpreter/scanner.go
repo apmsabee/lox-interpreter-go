@@ -143,7 +143,7 @@ func (s *Scanner) readNumber() (literal string) {
 	start := s.current - 1
 	token := s.fileContents[s.current]
 
-	for isDigit(token) {
+	for s.current < len(s.fileContents) && isDigit(token) {
 		s.current++
 		if s.current < len(s.fileContents) { //check if this is correct
 			token = s.fileContents[s.current]
