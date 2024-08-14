@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
-	"strconv"
+	"strings"
 )
 
 type Scanner struct {
@@ -100,7 +100,10 @@ func (s *Scanner) nextToken() (*Token, string) {
 	default:
 		if isDigit(currToken) {
 			val := s.readNumber()
-			floatVal, _ := strconv.ParseFloat(val, 64)
+			floatVal := val
+			if !strings.Contains(val, ".") {
+				floatVal += ".0"
+			}
 			return newToken(NUMBER, val, floatVal), ""
 		} else {
 			err := fmt.Sprintf("[line %d] Error: Unexpected character: %c\n", s.currentLine, currToken)
