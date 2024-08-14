@@ -123,6 +123,7 @@ func (s *Scanner) nextToken() (*Token, string) {
 			val := s.identifier()
 			token, exists := reservedWords[val]
 			if exists { //if identifier is a reserved word, return that tokentype instead of identifier tokentype
+				fmt.Printf("Found identifier, token: %v", token)
 				return newToken(token, val, nil), ""
 			}
 			return newToken(IDENTIFIER, val, nil), ""
