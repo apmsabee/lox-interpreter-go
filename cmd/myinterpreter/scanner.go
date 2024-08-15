@@ -136,33 +136,27 @@ func (s *Scanner) nextToken() (*Token, string) {
 }
 
 func reservedCheck(identifier string) (tokentype TokenType, reserved bool) {
-	//this is gonna be pretty scuffed, but I tried making a string to TokenType map and
-	//ran into an error that I couldn't explain at all, so instead making 2 arrs
-	reservedWords := []string{
-		"and", "class", "else", "false", "for", "if", "nil", "or",
-		"print", "return", "super", "this", "true", "var", "while",
+	reservedWords := map[string]TokenType{
+		"and":    AND,
+		"class":  CLASS,
+		"else":   ELSE,
+		"false":  FALSE,
+		"for":    FOR,
+		"if":     IF,
+		"nil":    NIL,
+		"or":     OR,
+		"print":  PRINT,
+		"return": RETURN,
+		"super":  SUPER,
+		"this":   THIS,
+		"true":   TRUE,
+		"var":    VAR,
+		"while":  WHILE,
 	}
-	tokens := []TokenType{
-		AND, CLASS, ELSE, FALSE, FOR, IF, NIL, OR, PRINT, RETURN,
-		SUPER, THIS, TRUE, VAR, WHILE,
-	}
-	//need an import to use contains, so we're gonna make our own
+	token, exists := reservedWords[identifier]
 
-	var tokenIndex int
-	located := false
-
-	for index, a := range reservedWords {
-		if a == identifier {
-			tokenIndex = index
-			located = true
-			fmt.Printf("TokenIndex: %v\n", tokenIndex)
-			fmt.Printf("token at tokenIndex: %v\n", tokens[tokenIndex])
-			break
-		}
-	}
-
-	if located {
-		return tokens[tokenIndex], true
+	if exists {
+		return token, true
 	}
 	return IDENTIFIER, false
 }
@@ -306,7 +300,8 @@ func newToken(t TokenType, lexeme string, literal interface{}) *Token {
 func (t TokenType) String() string {
 	return [...]string{"EOF", "LEFT_PAREN", "RIGHT_PAREN", "LEFT_BRACE", "RIGHT_BRACE", "COMMA", "DOT", "PLUS", "MINUS",
 		"SEMICOLON", "STAR", "EQUAL", "EQUAL_EQUAL", "BANG", "BANG_EQUAL", "LESS", "LESS_EQUAL",
-		"GREATER", "GREATER_EQUAL", "SLASH", "STRING", "NUMBER", "IDENTIFIER"}[t]
+		"GREATER", "GREATER_EQUAL", "SLASH", "STRING", "NUMBER", "IDENTIFIER", "AND", "CLASS", "ELSE",
+		"FALSE", "FOR", "IF", "NIL", "OR", "PRINT", "RETURN", "SUPER", "THIS", "TRUE", "VAR", "WHILE"}[t]
 }
 
 func (t *Token) String() string {
