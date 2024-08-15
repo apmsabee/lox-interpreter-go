@@ -155,12 +155,13 @@ func reservedCheck(identifier string) (tokentype TokenType, reserved bool) {
 		if a == identifier {
 			tokenIndex = index
 			located = true
+			fmt.Printf("TokenIndex: %v\n", tokenIndex)
+			fmt.Printf("token at tokenIndex: %v\n", tokens[tokenIndex])
 			break
 		}
 	}
 
 	if located {
-
 		return tokens[tokenIndex], true
 	}
 	return IDENTIFIER, false
