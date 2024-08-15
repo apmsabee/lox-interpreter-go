@@ -136,28 +136,32 @@ func (s *Scanner) nextToken() (*Token, string) {
 }
 
 func reservedCheck(identifier string) (tokentype TokenType, reserved bool) {
-	reservedWords := map[string]TokenType{
-		"and":    AND,
-		"class":  CLASS,
-		"else":   ELSE,
-		"false":  FALSE,
-		"for":    FOR,
-		"if":     IF,
-		"nil":    NIL,
-		"or":     OR,
-		"print":  PRINT,
-		"return": RETURN,
-		"super":  SUPER,
-		"this":   THIS,
-		"true":   TRUE,
-		"var":    VAR,
-		"while":  WHILE,
+	//this is gonna be pretty scuffed, but I tried making a string to TokenType map and
+	//ran into an error that I couldn't explain at all, so instead making 2 arrs
+	reservedWords := []string{
+		"and", "class", "else", "false", "for", "if", "nil", "or",
+		"print", "return", "super", "this", "true", "var", "while",
 	}
-	fmt.Println(reservedWords["this"])
-	if token, exists := reservedWords[identifier]; exists {
-		fmt.Printf("In reservedCheck, have identified that the token is a reserved word\n")
-		fmt.Printf("token: %s\n", token)
-		return token, true
+	tokens := []TokenType{
+		AND, CLASS, ELSE, FALSE, FOR, IF, NIL, OR, PRINT, RETURN,
+		SUPER, THIS, TRUE, VAR, WHILE,
+	}
+	//need an import to use contains, so we're gonna make our own
+
+	var tokenIndex int
+	located := false
+
+	for index, a := range reservedWords {
+		if a == identifier {
+			tokenIndex = index
+			located = true
+			break
+		}
+	}
+
+	if located {
+
+		return tokens[tokenIndex], true
 	}
 	return IDENTIFIER, false
 }
@@ -287,24 +291,6 @@ const (
 	VAR
 	WHILE
 )
-
-// var reservedWords = map[string]TokenType{
-// 	"and":    AND,
-// 	"class":  CLASS,
-// 	"else":   ELSE,
-// 	"false":  FALSE,
-// 	"for":    FOR,
-// 	"if":     IF,
-// 	"nil":    NIL,
-// 	"or":     OR,
-// 	"print":  PRINT,
-// 	"return": RETURN,
-// 	"super":  SUPER,
-// 	"this":   THIS,
-// 	"true":   TRUE,
-// 	"var":    VAR,
-// 	"while":  WHILE,
-// }
 
 type Token struct {
 	Type    TokenType
