@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"os"
 	"strconv"
 	"strings"
@@ -107,9 +108,16 @@ func (s *Scanner) nextToken() (*Token, string) {
 			interfaceVal := val
 
 			if strings.Contains(val, ".") { //potentially truncate floating-point values
-				floatVal, _ := strconv.ParseFloat(val, 64)                //convert to float
-				interfaceVal = strconv.FormatFloat(floatVal, 'f', -1, 64) //drop all trailing 0s
+				floatVal, _ := strconv.ParseFloat(val, 64)              //convert to float
+				formatted := strconv.FormatFloat(floatVal, 'f', -1, 64) //drop all trailing 0s
 
+				if math.Trunc(floatVal) == floatVal { //dropping the decimal does nothing to the value, therefore all decimal places are 0
+					//reduce to 1 point of precision
+					interfaceVal, _, _ = strings.Cut(interfaceVal, ".") //take only the integer portion of the number
+					interfaceVal += ".0"                                //append one degree of precision
+				} else {
+					interfaceVal = formatted
+				}
 			} else {
 				interfaceVal += ".0"
 			}
