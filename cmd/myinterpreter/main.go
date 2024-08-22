@@ -16,22 +16,39 @@ func main() {
 
 	config := getConfig()
 
-	scanner := newScanner(config.filename)
+	switch config.command {
 
-	for scanner.current <= len(scanner.fileContents) {
-		if token, errMsg := scanner.nextToken(); errMsg == "" {
-			if token != nil {
-				fmt.Println(token)
-				if token.String() == "EOF  null" {
-					break
+	case "tokenize":
+		scanner := newScanner(config.filename)
+
+		for scanner.current <= len(scanner.fileContents) {
+			if token, errMsg := scanner.nextToken(); errMsg == "" {
+				if token != nil {
+					fmt.Println(token)
+					if token.Type == EOF {
+						break
+					}
 				}
+			} else {
+				fmt.Fprint(os.Stderr, errMsg)
 			}
-		} else {
-			fmt.Fprint(os.Stderr, errMsg)
 		}
+
+		os.Exit(scanner.exitCode)
+
+	case "parse":
+		ok, ast := parse(config.filename)
+		if ok != nil {
+			fmt.Fprintf(os.Stderr, "Error parsing file: %v\n", ok)
+			os.Exit(1)
+		}
+		fmt.Print(ast.String())
+
+	default:
+		fmt.Fprintf(os.Stderr, "Unknown command: %s\n", config.command)
+		os.Exit(1)
 	}
 
-	os.Exit(scanner.exitCode)
 }
 
 func getConfig() (config Config) {
@@ -42,12 +59,6 @@ func getConfig() (config Config) {
 	}
 
 	config.command = os.Args[1]
-
-	if config.command != "tokenize" {
-		fmt.Fprintf(os.Stderr, "Unknown command: %s\n", config.command)
-		os.Exit(1)
-	}
-
 	config.filename = os.Args[2]
 	return
 
