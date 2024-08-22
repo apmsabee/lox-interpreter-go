@@ -134,7 +134,7 @@ func (p *Parser) primary() *Expr {
 	if p.match(NUMBER, STRING) {
 		return &Expr{
 			exprType: LITERAL,
-			value:    true,
+			value:    p.previous().literal,
 		}
 	}
 	if p.match(LEFT_PAREN) {
