@@ -150,6 +150,7 @@ func (p *Parser) primary() *Expr {
 	}
 	if p.match(LEFT_PAREN) {
 		expr := p.expression()
+		fmt.Println(expr)
 		p.consume(RIGHT_PAREN, "Expect ')' after expression.")
 		return &Expr{
 			exprType: GROUPING,
@@ -197,7 +198,6 @@ func (p *Parser) consume(token TokenType, message string) Token {
 	if p.check(token) {
 		return p.advance()
 	}
-	fmt.Println("Token: " + token.String())
 	panic(p.error(p.peek(), message))
 }
 
