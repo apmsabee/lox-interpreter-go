@@ -1,5 +1,9 @@
 package main
 
+import (
+	"fmt"
+)
+
 type Parser struct {
 	tokens  []Token
 	current int
@@ -131,7 +135,14 @@ func (p *Parser) primary() *Expr {
 			value:    p.previous().literal,
 		}
 	}
-	if p.match(NUMBER, STRING) {
+	if p.match(NUMBER) {
+
+		return &Expr{
+			exprType: LITERAL,
+			value:    p.previous().literal,
+		}
+	}
+	if p.match(STRING) {
 		return &Expr{
 			exprType: LITERAL,
 			value:    p.previous().literal,
@@ -184,6 +195,7 @@ func (p *Parser) check(token TokenType) bool {
 
 func (p *Parser) consume(token TokenType, message string) Token {
 	if p.check(token) {
+		fmt.Println("Token: " + token.String())
 		return p.advance()
 	}
 	panic(p.error(p.peek(), message))
