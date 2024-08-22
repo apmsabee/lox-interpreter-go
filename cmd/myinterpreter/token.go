@@ -43,6 +43,7 @@ const (
 	TRUE
 	VAR
 	WHILE
+	FUN
 )
 
 type Token struct {
@@ -59,7 +60,7 @@ func (t TokenType) String() string {
 	return [...]string{"EOF", "LEFT_PAREN", "RIGHT_PAREN", "LEFT_BRACE", "RIGHT_BRACE", "COMMA", "DOT", "PLUS", "MINUS",
 		"SEMICOLON", "STAR", "EQUAL", "EQUAL_EQUAL", "BANG", "BANG_EQUAL", "LESS", "LESS_EQUAL",
 		"GREATER", "GREATER_EQUAL", "SLASH", "STRING", "NUMBER", "IDENTIFIER", "AND", "CLASS", "ELSE",
-		"FALSE", "FOR", "IF", "NIL", "OR", "PRINT", "RETURN", "SUPER", "THIS", "TRUE", "VAR", "WHILE"}[t]
+		"FALSE", "FOR", "IF", "NIL", "OR", "PRINT", "RETURN", "SUPER", "THIS", "TRUE", "VAR", "WHILE", "FUN"}[t]
 }
 
 func (t *Token) String() string {

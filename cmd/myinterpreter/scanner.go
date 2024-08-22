@@ -142,6 +142,7 @@ func reservedCheck(identifier string) (tokentype TokenType, reserved bool) {
 		"else":   ELSE,
 		"false":  FALSE,
 		"for":    FOR,
+		"fun":    FUN,
 		"if":     IF,
 		"nil":    NIL,
 		"or":     OR,
