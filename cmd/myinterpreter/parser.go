@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 type Ast struct { //abstract syntax tree
 	nodes []Node
@@ -36,20 +39,20 @@ func (b *Binary) String() string {
 	return "(" + b.operator + " " + b.left.String() + " " + b.right.String() + ")"
 }
 
-func parse(source string) (bool, *Ast) {
+func parse(source string) (error, *Ast) {
 	ast := &Ast{}
 	scan := newScanner(source) //tokenize our input
 	for scan.current <= len(scan.fileContents) {
 		if token, errMsg := scan.nextToken(); errMsg == "" {
 			switch token.Type {
 			case EOF:
-				return false, ast //finish reading the input, return our ast
+				return nil, ast //finish reading the input, return our ast
 			default:
 				ast.nodes = append(ast.nodes, &Keyword{value: token.lexeme}) //append the Lexeme as a Node to the list of nodes in the interface
 			}
 		} else {
-			return true, nil
+			return errors.New("Unexpected character"), nil
 		}
 	}
-	return true, nil
+	return errors.New("unreachable"), nil
 }
