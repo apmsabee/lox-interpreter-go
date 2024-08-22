@@ -1,58 +1,194 @@
 package main
 
-import (
-	"errors"
-	"fmt"
-)
-
-type Ast struct { //abstract syntax tree
-	nodes []Node
+type Parser struct {
+	tokens  []Token
+	current int
 }
 
-func (a *Ast) String() string {
-	var ast string
-	for _, node := range a.nodes {
-		ast += node.String() + "\n"
+type ParseError struct {
+	token   Token
+	message string
+}
+
+// constructor
+func newParser(tokens []Token) *Parser {
+	return &Parser{
+		tokens:  tokens,
+		current: 0,
 	}
-	return ast
 }
 
-type Node interface {
-	fmt.Stringer //... as long as an object implements String(), it can be of type Node
-}
-
-type Keyword struct {
-	value string
-}
-
-func (k *Keyword) String() string {
-	return k.value
-}
-
-type Binary struct {
-	left     Node
-	right    Node
-	operator string
-}
-
-func (b *Binary) String() string {
-	return "(" + b.operator + " " + b.left.String() + " " + b.right.String() + ")"
-}
-
-func parse(source string) (error, *Ast) {
-	ast := &Ast{}
-	scan := newScanner(source) //tokenize our input
-	for scan.current <= len(scan.fileContents) {
-		if token, errMsg := scan.nextToken(); errMsg == "" {
-			switch token.Type {
-			case EOF:
-				return nil, ast //finish reading the input, return our ast
-			default:
-				ast.nodes = append(ast.nodes, &Keyword{value: token.lexeme}) //append the Lexeme as a Node to the list of nodes in the interface
+func (p *Parser) Parse() (*Expr, error) {
+	defer func() {
+		if r := recover(); r != nil {
+			if _, ok := r.(ParseError); ok {
+				return
 			}
-		} else {
-			return errors.New("Unexpected character"), nil
+			panic(r)
+		}
+	}()
+
+	return p.expression(), nil
+}
+
+// expression type navigation
+func (p *Parser) expression() *Expr {
+	return p.equality()
+}
+
+func (p *Parser) equality() *Expr {
+	expr := p.comparison()
+	for p.match(BANG_EQUAL, EQUAL_EQUAL) {
+		operator := p.previous()
+		right := p.comparison()
+		expr = &Expr{
+			exprType: BINARY,
+			left:     expr,
+			right:    right,
+			operator: operator,
 		}
 	}
-	return errors.New("unreachable"), nil
+	return expr
+}
+
+func (p *Parser) comparison() *Expr {
+	expr := p.term()
+
+	for p.match(GREATER, GREATER_EQUAL, LESS, LESS_EQUAL) {
+		operator := p.previous()
+		right := p.term()
+		expr = &Expr{
+			exprType: BINARY,
+			operator: operator,
+			left:     expr,
+			right:    right,
+		}
+	}
+	return expr
+}
+
+func (p *Parser) term() *Expr {
+	expr := p.factor()
+
+	for p.match(MINUS, PLUS) {
+		operator := p.previous()
+		right := p.factor()
+		expr = &Expr{
+			exprType: BINARY,
+			left:     expr,
+			operator: operator,
+			right:    right,
+		}
+	}
+	return expr
+}
+
+func (p *Parser) factor() *Expr {
+	expr := p.unary()
+	for p.match(SLASH, STAR) {
+		operator := p.previous()
+		right := p.unary()
+		expr = &Expr{
+			exprType: BINARY,
+			left:     expr,
+			operator: operator,
+			right:    right,
+		}
+	}
+
+	return expr
+}
+
+func (p *Parser) unary() *Expr {
+	for p.match(BANG, MINUS) {
+		operator := p.previous()
+		right := p.unary()
+		return &Expr{
+			exprType: UNARY,
+			right:    right,
+			operator: operator,
+		}
+	}
+	return p.primary()
+}
+
+func (p *Parser) primary() *Expr {
+	if p.match(FALSE) {
+		return &Expr{
+			exprType: LITERAL,
+			value:    false,
+		}
+	}
+	if p.match(TRUE) {
+		return &Expr{
+			exprType: LITERAL,
+			value:    true,
+		}
+	}
+	if p.match(NIL) {
+		return &Expr{
+			exprType: LITERAL,
+			value:    p.previous().literal,
+		}
+	}
+	if p.match(NUMBER, STRING) {
+		return &Expr{
+			exprType: LITERAL,
+			value:    true,
+		}
+	}
+	if p.match(LEFT_PAREN) {
+		expr := p.expression()
+		p.consume(RIGHT_PAREN, "Expect ')' after expression.")
+		return &Expr{
+			exprType: GROUPING,
+			left:     expr,
+		}
+	}
+	panic(p.error(p.peek(), "Expect expression."))
+}
+
+// Token Traversal methods
+func (p *Parser) previous() Token {
+	return p.tokens[p.current-1]
+}
+func (p *Parser) peek() Token {
+	return p.tokens[p.current]
+}
+func (p *Parser) advance() Token {
+	if !p.isAtEnd() {
+		p.current++
+	}
+	return p.previous()
+}
+func (p *Parser) isAtEnd() bool {
+	return p.peek().Type == EOF
+}
+
+// AST Helper Methods
+func (p *Parser) match(tokens ...TokenType) bool {
+	for _, token := range tokens {
+		if p.check(token) {
+			p.current++
+			return true
+		}
+	}
+	return false
+}
+func (p *Parser) check(token TokenType) bool {
+	if p.isAtEnd() {
+		return false
+	}
+	return p.peek().Type == token
+}
+
+func (p *Parser) consume(token TokenType, message string) Token {
+	if p.check(token) {
+		return p.advance()
+	}
+	panic(p.error(p.peek(), message))
+}
+
+func (p *Parser) error(t Token, message string) ParseError {
+	return ParseError{token: t, message: message}
 }
