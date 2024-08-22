@@ -195,9 +195,9 @@ func (p *Parser) check(token TokenType) bool {
 
 func (p *Parser) consume(token TokenType, message string) Token {
 	if p.check(token) {
-		fmt.Println("Token: " + token.String())
 		return p.advance()
 	}
+	fmt.Println("Token: " + token.String())
 	panic(p.error(p.peek(), message))
 }
 
