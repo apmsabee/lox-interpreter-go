@@ -144,7 +144,7 @@ func (p *Parser) primary() *Expr {
 	}
 	if p.match(LEFT_PAREN) {
 		expr := p.expression()
-		if p.previous().Type == RIGHT_PAREN {
+		if p.previous().Type == LEFT_PAREN {
 			fmt.Println(expr.left)
 			fmt.Println(expr.right)
 			fmt.Println(expr.value)
