@@ -31,6 +31,7 @@ func print_ast(expr *Expr) string {
 		return parenthesize(expr.operator.lexeme, expr.left, expr.right)
 
 	case GROUPING:
+		fmt.Fprintln(os.Stderr, expr.value)
 		return parenthesize("group", expr.left)
 
 	case UNARY:
@@ -40,7 +41,6 @@ func print_ast(expr *Expr) string {
 		if expr.value == nil {
 			return "nil"
 		}
-		fmt.Fprintln(os.Stderr, expr.value)
 		return fmt.Sprintf("%v", expr.value)
 	}
 	return ""
