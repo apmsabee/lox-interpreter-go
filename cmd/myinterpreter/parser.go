@@ -150,7 +150,7 @@ func (p *Parser) primary() *Expr {
 		expr := p.expression()
 
 		p.consume(RIGHT_PAREN, "Expect ')' after expression.")
-		if expr.left == nil {
+		if expr == nil {
 			p.exitCode = 65
 		}
 		return &Expr{
