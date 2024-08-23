@@ -155,6 +155,7 @@ func (p *Parser) primary() *Expr {
 			left:     expr,
 		}
 	}
+	p.exitCode = 65
 	panic(p.error(p.peek(), "Expect expression."))
 }
 
@@ -196,6 +197,7 @@ func (p *Parser) consume(token TokenType, message string) Token {
 	if p.check(token) {
 		return p.advance()
 	}
+	p.exitCode = 65
 	panic(p.error(p.peek(), message))
 }
 

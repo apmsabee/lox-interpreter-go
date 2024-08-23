@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
 )
 
 type ExprType int
@@ -31,7 +30,6 @@ func print_ast(expr *Expr) string {
 		return parenthesize(expr.operator.lexeme, expr.left, expr.right)
 
 	case GROUPING:
-		fmt.Fprintln(os.Stderr, expr.value)
 		return parenthesize("group", expr.left)
 
 	case UNARY:
