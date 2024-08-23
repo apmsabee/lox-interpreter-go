@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 type Parser struct {
 	tokens   []Token
 	current  int
@@ -148,11 +150,11 @@ func (p *Parser) primary() *Expr {
 	}
 	if p.match(LEFT_PAREN) {
 		expr := p.expression()
-
+		fmt.Println(expr)
+		fmt.Println(expr.left)
+		fmt.Println(expr.right)
+		fmt.Println(expr.value)
 		p.consume(RIGHT_PAREN, "Expect ')' after expression.")
-		if expr.left == nil && expr.right == nil && expr.value == nil {
-			p.exitCode = 65
-		}
 		return &Expr{
 			exprType: GROUPING,
 			left:     expr,
