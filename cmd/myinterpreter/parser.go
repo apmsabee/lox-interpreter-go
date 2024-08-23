@@ -149,13 +149,16 @@ func (p *Parser) primary() *Expr {
 		}
 	}
 	if p.match(LEFT_PAREN) {
-		expr := p.expression()
+		var expr *Expr
 		if p.peek().Type == RIGHT_PAREN {
+			expr = p.expression()
 			fmt.Println(expr)
 			fmt.Println(expr.left)
 			fmt.Println(expr.right)
 			fmt.Println(expr.value)
 		}
+		expr = p.expression()
+
 		p.consume(RIGHT_PAREN, "Expect ')' after expression.")
 		return &Expr{
 			exprType: GROUPING,
