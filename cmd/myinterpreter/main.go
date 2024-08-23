@@ -59,7 +59,7 @@ func main() {
 			fmt.Fprintf(os.Stderr, "Parsing error: %v\n", err)
 		}
 		fmt.Printf("%s\n", print_ast(res))
-		os.Exit(scanner.exitCode)
+		os.Exit(parser.exitCode)
 	default:
 		fmt.Fprintf(os.Stderr, "Unknown command: %s\n", config.command)
 		os.Exit(1)

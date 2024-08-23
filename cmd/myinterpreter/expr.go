@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 type ExprType int
 
@@ -37,6 +40,7 @@ func print_ast(expr *Expr) string {
 		if expr.value == nil {
 			return "nil"
 		}
+		fmt.Fprintln(os.Stderr, expr.value)
 		return fmt.Sprintf("%v", expr.value)
 	}
 	return ""
