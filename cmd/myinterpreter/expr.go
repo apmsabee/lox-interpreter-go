@@ -31,7 +31,7 @@ func print_ast(expr *Expr) string {
 		return parenthesize("group", expr.left)
 
 	case UNARY:
-		return parenthesize(expr.operator.lexeme, expr.left)
+		return parenthesize(expr.operator.lexeme, expr.right)
 
 	case LITERAL:
 		if expr.value == nil {

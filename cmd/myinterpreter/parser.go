@@ -104,7 +104,7 @@ func (p *Parser) factor() *Expr {
 }
 
 func (p *Parser) unary() *Expr {
-	for p.match(BANG, MINUS) {
+	if p.match(BANG, MINUS) {
 		operator := p.previous()
 		right := p.unary()
 		return &Expr{
@@ -132,33 +132,23 @@ func (p *Parser) primary() *Expr {
 	if p.match(NIL) {
 		return &Expr{
 			exprType: LITERAL,
-			value:    p.previous().literal,
+			value:    nil,
 		}
 	}
-	if p.match(NUMBER) {
+	if p.match(NUMBER, STRING) {
 
-		return &Expr{
-			exprType: LITERAL,
-			value:    p.previous().literal,
-		}
-	}
-	if p.match(STRING) {
 		return &Expr{
 			exprType: LITERAL,
 			value:    p.previous().literal,
 		}
 	}
 	if p.match(LEFT_PAREN) {
-		var expr *Expr
-		if p.tokens[p.current+1].Type == RIGHT_PAREN {
-			expr = p.expression()
-			fmt.Println(expr)
+		expr := p.expression()
+		if p.previous().Type == RIGHT_PAREN {
 			fmt.Println(expr.left)
 			fmt.Println(expr.right)
 			fmt.Println(expr.value)
 		}
-		expr = p.expression()
-
 		p.consume(RIGHT_PAREN, "Expect ')' after expression.")
 		return &Expr{
 			exprType: GROUPING,
@@ -169,9 +159,6 @@ func (p *Parser) primary() *Expr {
 }
 
 // Token Traversal methods
-func (p *Parser) previous() Token {
-	return p.tokens[p.current-1]
-}
 func (p *Parser) peek() Token {
 	return p.tokens[p.current]
 }
@@ -180,6 +167,9 @@ func (p *Parser) advance() Token {
 		p.current++
 	}
 	return p.previous()
+}
+func (p *Parser) previous() Token {
+	return p.tokens[p.current-1]
 }
 func (p *Parser) isAtEnd() bool {
 	return p.peek().Type == EOF
