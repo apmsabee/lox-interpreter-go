@@ -150,7 +150,7 @@ func (p *Parser) primary() *Expr {
 	}
 	if p.match(LEFT_PAREN) {
 		var expr *Expr
-		if p.peek().Type == RIGHT_PAREN {
+		if p.tokens[p.current+1].Type == RIGHT_PAREN {
 			expr = p.expression()
 			fmt.Println(expr)
 			fmt.Println(expr.left)
