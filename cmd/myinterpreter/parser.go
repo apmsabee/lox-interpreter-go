@@ -1,8 +1,9 @@
 package main
 
 type Parser struct {
-	tokens  []Token
-	current int
+	tokens   []Token
+	current  int
+	exitCode int
 }
 
 type ParseError struct {
@@ -13,8 +14,9 @@ type ParseError struct {
 // constructor
 func newParser(tokens []Token) *Parser {
 	return &Parser{
-		tokens:  tokens,
-		current: 0,
+		tokens:   tokens,
+		current:  0,
+		exitCode: 0,
 	}
 }
 
@@ -148,6 +150,9 @@ func (p *Parser) primary() *Expr {
 		expr := p.expression()
 
 		p.consume(RIGHT_PAREN, "Expect ')' after expression.")
+		if expr.left == nil && expr.right == nil {
+			p.exitCode = 65
+		}
 		return &Expr{
 			exprType: GROUPING,
 			left:     expr,
