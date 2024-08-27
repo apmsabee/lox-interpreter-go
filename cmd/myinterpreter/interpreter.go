@@ -46,7 +46,7 @@ func (interpreter *Interpreter) visitExpr(expr Expr) any {
 			checkNumberOperand(expr.operator, right)
 			objStr, _ := right.(string)
 			val, _ := strconv.ParseFloat(objStr, 64)
-			return val
+			return -val
 		}
 		// case BINARY:
 		// 	left := evaluate(expr.left)
