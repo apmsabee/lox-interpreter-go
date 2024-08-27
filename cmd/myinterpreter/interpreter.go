@@ -61,9 +61,11 @@ func (interpreter *Interpreter) visitExpr(expr Expr) any {
 		// 		return leftVal - rightVal
 		// 	case PLUS:
 		case SLASH:
-			fmt.Fprintf(os.Stderr, "%v\n", leftVal)
-			fmt.Fprintf(os.Stderr, "%v\n", rightVal)
-			fmt.Fprintf(os.Stderr, "%v\n", (leftVal / rightVal))
+			fmt.Fprintf(os.Stderr, "leftVal: %v\n", leftVal)
+			fmt.Fprintf(os.Stderr, "left: %v\n", left)
+			fmt.Fprintf(os.Stderr, "rightVal: %v\n", rightVal)
+			fmt.Fprintf(os.Stderr, "right: %v\n", right)
+			fmt.Fprintf(os.Stderr, "result: %v\n", (leftVal / rightVal))
 			return leftVal / rightVal
 		case STAR:
 			fmt.Fprintf(os.Stderr, "%v\n", (leftVal * rightVal))
