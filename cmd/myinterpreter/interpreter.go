@@ -48,31 +48,34 @@ func (interpreter *Interpreter) visitExpr(expr Expr) any {
 			val, _ := strconv.ParseFloat(objStr, 64)
 			return -val
 		}
-		// case BINARY:
-		// 	left := evaluate(expr.left)
-		// 	right := evaluate(expr.right)
-		// 	switch expr.operator.Type{
+	case BINARY:
+		left := interpreter.evaluate(expr.left)
+		right := interpreter.evaluate(expr.right)
+		rightStr, _ := right.(string)
+		rightVal, _ := strconv.ParseFloat(rightStr, 64)
+		leftStr, _ := left.(string)
+		leftVal, _ := strconv.ParseFloat(leftStr, 64)
+		switch expr.operator.Type {
 		// 	case MINUS:
-		// 		return (float64)(left) - (float64)(right)
+		// 		return leftVal - rightVal
 		// 	case PLUS:
-
-		// 	case SLASH:
-		// 		return (float64)(left) / (float64)(right)
-		// 	case STAR:
-		// 		return (float64)(left) / (float64)(right)
-		// 	case GREATER:
-		// 		return (float64)(left) > (float64)(right)
-		// 	case GREATER_EQUAL:
-		// 		return (float64)(left) >= (float64)(right)
-		// 	case LESS:
-		// 		return (float64)(left) < (float64)(right)
-		// 	case LESS_EQUAL:
-		// 		return (float64)(left) <= (float64)(right)
-		// 	case BANG_EQUAL:
-		// 		return !isEqual(expr.left, expr.right)
-		// 	case EQUAL_EQUAL:
-		// 		return isEqual(expr.left, expr.right)
-		// 	}
+		case SLASH:
+			return leftVal / rightVal
+		case STAR:
+			return leftVal / rightVal
+			// 	case GREATER:
+			// 		return leftVal > rightVal
+			// 	case GREATER_EQUAL:
+			// 		return leftVal >= rightVal
+			// 	case LESS:
+			// 		return leftVal < rightVal
+			// 	case LESS_EQUAL:
+			// 		return leftVal <= rightVal
+			// 	case BANG_EQUAL:
+			// 		return !isEqual(expr.left, expr.right)
+			// 	case EQUAL_EQUAL:
+			// 		return isEqual(expr.left, expr.right)
+		}
 		// 	return nil
 	}
 	return nil
