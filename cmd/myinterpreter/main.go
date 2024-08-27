@@ -60,6 +60,33 @@ func main() {
 		}
 		fmt.Printf("%s\n", print_ast(res))
 		os.Exit(parser.exitCode)
+	case "evaluate":
+		//scan tokens
+		scanner := newScanner(config.filename)
+		var tokens []Token
+		for scanner.current <= len(scanner.fileContents) {
+			if token, errMsg := scanner.nextToken(); errMsg == "" {
+				if token != nil {
+					tokens = append(tokens, *token)
+					if token.Type == EOF {
+						break
+					}
+				}
+			} else {
+				fmt.Fprint(os.Stderr, errMsg)
+			}
+		}
+
+		parser := newParser(tokens)
+		res, err := parser.Parse()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Parsing error: %v\n", err)
+		}
+
+		interpreter := Interpreter{}
+		interpreter.interpret(*res)
+
+		os.Exit(parser.exitCode)
 	default:
 		fmt.Fprintf(os.Stderr, "Unknown command: %s\n", config.command)
 		os.Exit(1)
