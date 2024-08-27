@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"reflect"
 	"strconv"
 )
 
@@ -111,16 +110,16 @@ func stringify(obj any) string {
 	if obj == nil {
 		return "nil"
 	}
-	dblObj, ok := obj.(float64)
-	fmt.Println(ok)
-	fmt.Printf("%v\n", reflect.TypeOf(obj))
-	if ok {
-		text := strconv.FormatFloat(dblObj, 'f', -1, 64)
 
-		if lastTwo := text[len(text)-2:]; lastTwo == ".0" {
-			return text[0 : len(text)-2]
+	if objStr, ok := obj.(string); ok {
+		if val, err := strconv.ParseFloat(objStr, 64); err == nil {
+			text := strconv.FormatFloat(val, 'f', -1, 64)
+			if lastTwo := text[len(text)-2:]; lastTwo == ".0" {
+				return text[0 : len(text)-2]
+			}
+			return text
 		}
-		return text
 	}
+
 	return fmt.Sprintf("%v", obj)
 }
