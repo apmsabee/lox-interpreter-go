@@ -49,6 +49,7 @@ func (interpreter *Interpreter) visitExpr(expr Expr) any {
 			return -val
 		}
 	case BINARY:
+		//this is a bit of a mess, but it seems like number literals are stored as strings, but the nested results of arithmetic operations are stored as floats, so theres some weird conditional conversions we have to do for this stage
 		left := interpreter.evaluate(expr.left)
 		right := interpreter.evaluate(expr.right)
 
@@ -72,9 +73,23 @@ func (interpreter *Interpreter) visitExpr(expr Expr) any {
 		}
 
 		switch expr.operator.Type {
-		// 	case MINUS:
-		// 		return leftVal - rightVal
-		// 	case PLUS:
+		case MINUS:
+			return leftVal - rightVal
+		case PLUS:
+			//addition and concatenation need to be dealt with
+			floatRight, fRt := right.(float64)
+			floatLeft, fLt := left.(float64)
+			if fRt && fLt {
+				return floatLeft + floatRight
+			}
+
+			stringRight, stRt := right.(string)
+			stringLeft, stLt := left.(string)
+			if stLt && stRt {
+				return stringLeft + stringRight
+			}
+
+			break
 		case SLASH:
 			return leftVal / rightVal
 		case STAR:
