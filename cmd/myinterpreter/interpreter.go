@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 )
 
@@ -60,8 +61,10 @@ func (interpreter *Interpreter) visitExpr(expr Expr) any {
 		// 		return leftVal - rightVal
 		// 	case PLUS:
 		case SLASH:
+			fmt.Fprintf(os.Stderr, "%v\n", (leftVal / rightVal))
 			return leftVal / rightVal
 		case STAR:
+			fmt.Fprintf(os.Stderr, "%v\n", (leftVal * rightVal))
 			return leftVal * rightVal
 			// 	case GREATER:
 			// 		return leftVal > rightVal
