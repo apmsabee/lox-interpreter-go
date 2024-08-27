@@ -62,7 +62,7 @@ func (interpreter *Interpreter) visitExpr(expr Expr) any {
 		case SLASH:
 			return leftVal / rightVal
 		case STAR:
-			return leftVal / rightVal
+			return leftVal * rightVal
 			// 	case GREATER:
 			// 		return leftVal > rightVal
 			// 	case GREATER_EQUAL:
