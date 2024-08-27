@@ -8,12 +8,35 @@ import (
 type Interpreter struct {
 }
 
+func (interpreter *Interpreter) interpret(expression Expr) {
+	val := interpreter.visitExpr(expression)
+	fmt.Println(stringify(val))
+}
+
+func stringify(obj any) string {
+	if obj == nil {
+		return "nil"
+	}
+
+	if objStr, ok := obj.(string); ok {
+		if val, err := strconv.ParseFloat(objStr, 64); err == nil {
+			text := strconv.FormatFloat(val, 'f', -1, 64)
+			if lastTwo := text[len(text)-2:]; lastTwo == ".0" {
+				return text[0 : len(text)-2]
+			}
+			return text
+		}
+	}
+
+	return fmt.Sprintf("%v", obj)
+}
+
 func (interpreter *Interpreter) visitExpr(expr Expr) any {
 	switch expr.exprType {
 	case LITERAL:
 		return expr.value
-		// case GROUPING:
-		// 	return evaluate(expr.left)
+	case GROUPING:
+		return interpreter.evaluate(expr.left)
 		// case UNARY:
 		// 	right := evaluate(expr.right)
 		// 	switch expr.operator.Type{
@@ -51,6 +74,10 @@ func (interpreter *Interpreter) visitExpr(expr Expr) any {
 		// 	return nil
 	}
 	return nil
+}
+
+func (interpreter *Interpreter) evaluate(expr *Expr) any {
+	return interpreter.visitExpr(*expr)
 }
 
 func isEqual(expr1 *Expr, expr2 *Expr) bool {
@@ -93,33 +120,4 @@ type RuntimeError struct {
 
 func runtimeError(token Token, message string) RuntimeError {
 	return RuntimeError{token: token, message: message}
-}
-
-// func evaluate(expr *Expr) any {
-// 	switch expr.exprType {
-
-// 	}
-// }
-
-func (interpreter *Interpreter) interpret(expression Expr) {
-	val := interpreter.visitExpr(expression)
-	fmt.Println(stringify(val))
-}
-
-func stringify(obj any) string {
-	if obj == nil {
-		return "nil"
-	}
-
-	if objStr, ok := obj.(string); ok {
-		if val, err := strconv.ParseFloat(objStr, 64); err == nil {
-			text := strconv.FormatFloat(val, 'f', -1, 64)
-			if lastTwo := text[len(text)-2:]; lastTwo == ".0" {
-				return text[0 : len(text)-2]
-			}
-			return text
-		}
-	}
-
-	return fmt.Sprintf("%v", obj)
 }
