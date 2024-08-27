@@ -114,7 +114,7 @@ func stringify(obj any) string {
 	if dblObj, ok := obj.(float64); ok {
 		text := strconv.FormatFloat(dblObj, 'f', -1, 64)
 		if lastTwo := text[len(text)-2:]; lastTwo == ".0" {
-			text = text[0 : len(text)-2]
+			return text[0 : len(text)-2]
 		}
 		return text
 	}
