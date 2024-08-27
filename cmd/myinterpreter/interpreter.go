@@ -43,7 +43,7 @@ func (interpreter *Interpreter) visitExpr(expr Expr) any {
 		case BANG:
 			return !isTruthy(right)
 		case MINUS:
-			checkNumberOperand(expr.operator, right)
+			//checkNumberOperand(expr.operator, right)
 			objStr, _ := right.(string)
 			val, _ := strconv.ParseFloat(objStr, 64)
 			return -val
@@ -77,19 +77,20 @@ func (interpreter *Interpreter) visitExpr(expr Expr) any {
 			return leftVal - rightVal
 		case PLUS:
 			//addition and concatenation need to be dealt with
-			floatRight, fRt := right.(float64)
-			floatLeft, fLt := left.(float64)
-			if fRt && fLt {
+			//again because of the strangeness of our evaluate() return typing, this is going to be ugly
+			//throwing type checking into a helper method
+			okR, floatRight := isFloatVal(right)
+			okL, floatLeft := isFloatVal(left)
+			if okR && okL {
 				return floatLeft + floatRight
 			}
 
-			stringRight, stRt := right.(string)
-			stringLeft, stLt := left.(string)
-			if stLt && stRt {
+			stringRight, okRt := right.(string)
+			stringLeft, okLt := left.(string)
+			if okRt && okLt {
 				return stringLeft + stringRight
 			}
 
-			break
 		case SLASH:
 			return leftVal / rightVal
 		case STAR:
@@ -127,14 +128,28 @@ func isTruthy(right any) bool {
 	return true //default return is true
 }
 
-func checkNumberOperand(operator Token, operand any) {
-	if objStr, ok := operand.(string); ok {
-		if _, err := strconv.ParseFloat(objStr, 64); err == nil {
-			return
+func isFloatVal(val any) (bool, float64) {
+	//if the value is either already of type float64, or can be parsed into a float64, return true and the associated value
+	if fVal, ok := val.(float64); ok {
+		return true, fVal
+	}
+
+	if valStr, ok := val.(string); ok {
+		if fVal, err := strconv.ParseFloat(valStr, 64); err == nil {
+			return true, fVal
 		}
 	}
-	panic(runtimeError(operator, "Operand must be a number"))
+	return false, 0
 }
+
+// func checkNumberOperand(operator Token, operand any) {
+// 	if objStr, ok := operand.(string); ok {
+// 		if _, err := strconv.ParseFloat(objStr, 64); err == nil {
+// 			return
+// 		}
+// 	}
+// 	panic(runtimeError(operator, "Operand must be a number"))
+// }
 
 // func checkNumberOperands(operator Token, left any, right any) {
 // 	_, okl := left.(float64)
@@ -151,11 +166,11 @@ func checkNumberOperand(operator Token, operand any) {
 // 	return false
 // }
 
-type RuntimeError struct {
-	token   Token
-	message string
-}
+// type RuntimeError struct {
+// 	token   Token
+// 	message string
+// }
 
-func runtimeError(token Token, message string) RuntimeError {
-	return RuntimeError{token: token, message: message}
-}
+// func runtimeError(token Token, message string) RuntimeError {
+// 	return RuntimeError{token: token, message: message}
+// }
