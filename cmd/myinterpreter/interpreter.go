@@ -75,7 +75,9 @@ func (interpreter *Interpreter) visitExpr(expr Expr) any {
 
 		switch expr.operator.Type {
 		case MINUS:
-			fmt.Fprintf(os.Stderr, "Minus result: %v\n", (leftVal - rightVal))
+			if rightVal < 0 {
+				rightVal *= -1
+			}
 			return leftVal - rightVal
 		case PLUS:
 			//addition and concatenation need to be dealt with
@@ -84,7 +86,7 @@ func (interpreter *Interpreter) visitExpr(expr Expr) any {
 			okR, floatRight := isFloatVal(right)
 			okL, floatLeft := isFloatVal(left)
 			if okR && okL {
-				fmt.Fprintf(os.Stderr, "Plus result: %v\n", (leftVal - rightVal))
+				fmt.Fprintf(os.Stderr, "Plus result: %v\n", (leftVal + rightVal))
 				return floatLeft + floatRight
 			}
 
