@@ -62,6 +62,7 @@ func (interpreter *Interpreter) visitExpr(expr Expr) any {
 		// 	case PLUS:
 		case SLASH:
 			fmt.Fprintf(os.Stderr, "leftVal: %v\n", leftVal)
+			fmt.Fprintf(os.Stderr, "leftVal Type: %T\n", leftVal)
 			fmt.Fprintf(os.Stderr, "left: %v\n", left)
 			fmt.Fprintf(os.Stderr, "rightVal: %v\n", rightVal)
 			fmt.Fprintf(os.Stderr, "right: %v\n", right)
