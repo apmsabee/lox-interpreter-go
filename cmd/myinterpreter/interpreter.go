@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"strconv"
 )
 
@@ -52,24 +51,33 @@ func (interpreter *Interpreter) visitExpr(expr Expr) any {
 	case BINARY:
 		left := interpreter.evaluate(expr.left)
 		right := interpreter.evaluate(expr.right)
+
 		rightStr, _ := right.(string)
-		rightVal, _ := strconv.ParseFloat(rightStr, 64)
 		leftStr, _ := left.(string)
-		leftVal, _ := strconv.ParseFloat(leftStr, 64)
+
+		var leftVal, rightVal float64
+
+		switch left.(type) {
+		case float64:
+			leftVal, _ = left.(float64)
+		default:
+			leftVal, _ = strconv.ParseFloat(leftStr, 64)
+		}
+
+		switch right.(type) {
+		case float64:
+			rightVal, _ = right.(float64)
+		default:
+			rightVal, _ = strconv.ParseFloat(rightStr, 64)
+		}
+
 		switch expr.operator.Type {
 		// 	case MINUS:
 		// 		return leftVal - rightVal
 		// 	case PLUS:
 		case SLASH:
-			fmt.Fprintf(os.Stderr, "leftVal: %v\n", leftVal)
-			fmt.Fprintf(os.Stderr, "leftVal Type: %T\n", leftVal)
-			fmt.Fprintf(os.Stderr, "left: %v\n", left)
-			fmt.Fprintf(os.Stderr, "rightVal: %v\n", rightVal)
-			fmt.Fprintf(os.Stderr, "right: %v\n", right)
-			fmt.Fprintf(os.Stderr, "result: %v\n", (leftVal / rightVal))
 			return leftVal / rightVal
 		case STAR:
-			fmt.Fprintf(os.Stderr, "%v\n", (leftVal * rightVal))
 			return leftVal * rightVal
 			// 	case GREATER:
 			// 		return leftVal > rightVal
