@@ -37,15 +37,17 @@ func (interpreter *Interpreter) visitExpr(expr Expr) any {
 		return expr.value
 	case GROUPING:
 		return interpreter.evaluate(expr.left)
-		// case UNARY:
-		// 	right := evaluate(expr.right)
-		// 	switch expr.operator.Type{
-		// 	case BANG:
-		// 		return !isTruthy(right)
-		// 	case MINUS:
-		//checkNumberOperand(expr.operator, right)
-		// 		return -(float64)(right)
-		// 	}
+	case UNARY:
+		right := interpreter.evaluate(expr.right)
+		switch expr.operator.Type {
+		case BANG:
+			return !isTruthy(right)
+		case MINUS:
+			checkNumberOperand(expr.operator, right)
+			objStr, _ := right.(string)
+			val, _ := strconv.ParseFloat(objStr, 64)
+			return val
+		}
 		// case BINARY:
 		// 	left := evaluate(expr.left)
 		// 	right := evaluate(expr.right)
@@ -80,10 +82,6 @@ func (interpreter *Interpreter) evaluate(expr *Expr) any {
 	return interpreter.visitExpr(*expr)
 }
 
-func isEqual(expr1 *Expr, expr2 *Expr) bool {
-	return false
-}
-
 func isTruthy(right any) bool {
 	if right == nil {
 		return false
@@ -96,22 +94,28 @@ func isTruthy(right any) bool {
 }
 
 func checkNumberOperand(operator Token, operand any) {
-	if _, ok := operand.(float64); ok {
-		return
+	if objStr, ok := operand.(string); ok {
+		if _, err := strconv.ParseFloat(objStr, 64); err == nil {
+			return
+		}
 	}
 	panic(runtimeError(operator, "Operand must be a number"))
 }
 
-func checkNumberOperands(operator Token, left any, right any) {
-	_, okl := left.(float64)
-	_, okr := right.(float64)
+// func checkNumberOperands(operator Token, left any, right any) {
+// 	_, okl := left.(float64)
+// 	_, okr := right.(float64)
 
-	if okl && okr {
-		return
-	}
+// 	if okl && okr {
+// 		return
+// 	}
 
-	panic(runtimeError(operator, "Operands must be numbers"))
-}
+// 	panic(runtimeError(operator, "Operands must be numbers"))
+// }
+
+// func isEqual(expr1 *Expr, expr2 *Expr) bool {
+// 	return false
+// }
 
 type RuntimeError struct {
 	token   Token
