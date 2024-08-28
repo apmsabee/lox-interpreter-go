@@ -47,6 +47,7 @@ func (interpreter *Interpreter) visitExpr(expr Expr) any {
 			//checkNumberOperand(expr.operator, right)
 			objStr, _ := right.(string)
 			val, _ := strconv.ParseFloat(objStr, 64)
+			fmt.Fprintf(os.Stderr, "Type: %T, value:%v\n", val, val)
 			return -val
 		}
 	case BINARY:
@@ -75,9 +76,7 @@ func (interpreter *Interpreter) visitExpr(expr Expr) any {
 
 		switch expr.operator.Type {
 		case MINUS:
-			if rightVal < 0 {
-				rightVal *= -1
-			}
+			printBinary(leftVal, rightVal, "-")
 			return leftVal - rightVal
 		case PLUS:
 			//addition and concatenation need to be dealt with
@@ -86,7 +85,7 @@ func (interpreter *Interpreter) visitExpr(expr Expr) any {
 			okR, floatRight := isFloatVal(right)
 			okL, floatLeft := isFloatVal(left)
 			if okR && okL {
-				fmt.Fprintf(os.Stderr, "Plus result: %v\n", (leftVal + rightVal))
+				printBinary(floatLeft, floatRight, "+")
 				return floatLeft + floatRight
 			}
 
@@ -117,7 +116,10 @@ func (interpreter *Interpreter) visitExpr(expr Expr) any {
 	}
 	return nil
 }
-
+func printBinary(left any, right any, operator string) {
+	fmt.Fprintf(os.Stderr, "%v %s %v\n", left, operator, right)
+	fmt.Fprintf(os.Stderr, "%T for left and %T for right\n", left, right)
+}
 func (interpreter *Interpreter) evaluate(expr *Expr) any {
 	return interpreter.visitExpr(*expr)
 }
