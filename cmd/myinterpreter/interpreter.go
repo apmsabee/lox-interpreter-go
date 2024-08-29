@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"reflect"
 	"strconv"
 )
 
@@ -187,7 +188,10 @@ func isEqual(expr1 any, expr2 any) bool {
 		return false
 	}
 
-	return expr1 == expr2
+	if reflect.TypeOf(expr1) == reflect.TypeOf(expr2) {
+		return expr1 == expr2
+	}
+	return false
 }
 
 // type RuntimeError struct {
