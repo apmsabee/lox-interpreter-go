@@ -180,39 +180,23 @@ func isFloatVal(val any) (bool, float64) {
 // }
 
 func (interpreter *Interpreter) isEqual(left *Expr, right *Expr) bool {
-	leftType := left.operator.Type
-	rightType := right.operator.Type
 	fmt.Fprintf(os.Stderr, "L: %v R: %v\n", left, right)
 	fmt.Fprintf(os.Stderr, "Right-Left: %v\n", right.left)
 
-	if leftType == rightType {
-		//evaluate the expressions
-		leftVal := interpreter.evaluate(left)
-		rightVal := interpreter.evaluate(right)
+	leftVal := interpreter.evaluate(left)
+	rightVal := interpreter.evaluate(right)
 
-		fmt.Fprintf(os.Stderr, "ValL: %v ValR: %v\n", leftVal, rightVal)
+	fmt.Fprintf(os.Stderr, "ValL: %v ValR: %v\n", leftVal, rightVal)
+	fmt.Fprintf(os.Stderr, "Right-Left Nil check : %v\n", right.left != nil)
+	fmt.Fprintf(os.Stderr, "Left-Left Nil check : %v\n", left.left != nil)
 
-		if right.left != nil || left.left != nil {
-			lFloat, _ := leftVal.(float64)
-			rFloat, _ := rightVal.(float64)
-			return lFloat == rFloat
-		}
-
-		return leftVal == rightVal
+	if right.left != nil || left.left != nil {
+		lFloat, _ := leftVal.(float64)
+		rFloat, _ := rightVal.(float64)
+		return lFloat == rFloat
 	}
-	return false
 
-	// if expr1 == nil && expr2 == nil {
-	// 	return true
-	// }
-	// if expr1 == nil {
-	// 	return false
-	// }
-	// //need to do type conversion on these again
-	// if reflect.TypeOf(expr1) == reflect.TypeOf(expr2) {
-	// 	return expr1 == expr2
-	// }
-	// return false
+	return leftVal == rightVal
 }
 
 // type RuntimeError struct {
