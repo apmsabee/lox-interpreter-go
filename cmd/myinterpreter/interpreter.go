@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"reflect"
 	"strconv"
 )
 
@@ -120,9 +119,9 @@ func (interpreter *Interpreter) visitExpr(expr Expr) any {
 		case LESS_EQUAL:
 			return leftVal <= rightVal
 		case BANG_EQUAL:
-			return !isEqual(left, right)
+			return !interpreter.isEqual(expr.left, expr.right)
 		case EQUAL_EQUAL:
-			return isEqual(left, right)
+			return interpreter.isEqual(expr.left, expr.right)
 		}
 		// 	return nil
 	}
@@ -180,18 +179,41 @@ func isFloatVal(val any) (bool, float64) {
 // 	panic(runtimeError(operator, "Operands must be numbers"))
 // }
 
-func isEqual(expr1 any, expr2 any) bool {
-	if expr1 == nil && expr2 == nil {
-		return true
-	}
-	if expr1 == nil {
-		return false
-	}
+func (interpreter *Interpreter) isEqual(left *Expr, right *Expr) bool {
+	leftType := left.operator.Type
+	rightType := right.operator.Type
+	if leftType == rightType {
+		//evaluate the expressions
+		leftVal := interpreter.evaluate(left)
+		rightVal := interpreter.evaluate(right)
 
-	if reflect.TypeOf(expr1) == reflect.TypeOf(expr2) {
-		return expr1 == expr2
+		if leftType == STRING {
+			lString, _ := leftVal.(string)
+			rString, _ := rightVal.(string)
+			return lString == rString
+		}
+
+		if leftType == NUMBER {
+			lFloat, _ := leftVal.(float64)
+			rFloat, _ := rightVal.(float64)
+			return lFloat == rFloat
+		}
+
+		return leftVal == rightVal
 	}
 	return false
+
+	// if expr1 == nil && expr2 == nil {
+	// 	return true
+	// }
+	// if expr1 == nil {
+	// 	return false
+	// }
+	// //need to do type conversion on these again
+	// if reflect.TypeOf(expr1) == reflect.TypeOf(expr2) {
+	// 	return expr1 == expr2
+	// }
+	// return false
 }
 
 // type RuntimeError struct {
