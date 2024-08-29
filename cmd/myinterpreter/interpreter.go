@@ -38,7 +38,7 @@ func (interpreter *Interpreter) visitExpr(expr Expr) any {
 		return expr.value
 	case GROUPING:
 		val := interpreter.evaluate(expr.left)
-		fmt.Fprintf(os.Stderr, "Grouping result: %v, Type: %T", val, val)
+		fmt.Fprintf(os.Stderr, "Grouping result: %v, Type: %T\n", val, val)
 		return val
 	case UNARY:
 		right := interpreter.evaluate(expr.right)
@@ -47,6 +47,11 @@ func (interpreter *Interpreter) visitExpr(expr Expr) any {
 			return !isTruthy(right)
 		case MINUS:
 			//checkNumberOperand(expr.operator, right)
+			ok, float := isFloatVal(right)
+			if ok {
+				fmt.Fprintf(os.Stderr, "Returning float val from unary: %v\n", float)
+				return -float
+			}
 			objStr, _ := right.(string)
 			val, _ := strconv.ParseFloat(objStr, 64)
 			fmt.Fprintf(os.Stderr, "Type: %T, value: %v\n", val, val)
@@ -79,7 +84,7 @@ func (interpreter *Interpreter) visitExpr(expr Expr) any {
 		switch expr.operator.Type {
 		case MINUS:
 			printBinary(leftVal, rightVal, "-")
-			fmt.Fprintf(os.Stderr, "Sub result: %v\n", leftVal+rightVal)
+			fmt.Fprintf(os.Stderr, "Sub result: %v\n", leftVal-rightVal)
 			return leftVal - rightVal
 		case PLUS:
 			//addition and concatenation need to be dealt with
