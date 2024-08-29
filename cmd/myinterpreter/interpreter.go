@@ -186,13 +186,22 @@ func (interpreter *Interpreter) isEqual(left *Expr, right *Expr) bool {
 	rightVal := interpreter.evaluate(right)
 
 	fmt.Fprintf(os.Stderr, "ValL: %v ValR: %v\n", leftVal, rightVal)
-	fmt.Fprintf(os.Stderr, "Right-Left Nil check : %v\n", right.left != nil)
-	fmt.Fprintf(os.Stderr, "Left-Left Nil check : %v\n", left.left != nil)
 
 	if right.left != nil || left.left != nil {
-		fmt.Fprintf(os.Stderr, "Inside right-left if statement")
-		lFloat, _ := leftVal.(float64)
-		rFloat, _ := rightVal.(float64)
+		var lFloat, rFloat float64
+
+		if okR, floatR := isFloatVal(rightVal); okR {
+			rFloat = floatR
+		} else {
+			rFloat, _ = rightVal.(float64)
+		}
+
+		if okL, floatL := isFloatVal(rightVal); okL {
+			lFloat = floatL
+		} else {
+			lFloat, _ = leftVal.(float64)
+		}
+
 		fmt.Fprintf(os.Stderr, "RL Statement L: %v R: %v\n", lFloat, rFloat)
 		return lFloat == rFloat
 	}
