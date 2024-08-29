@@ -180,9 +180,10 @@ func isFloatVal(val any) (bool, float64) {
 // }
 
 func (interpreter *Interpreter) isEqual(left *Expr, right *Expr) bool {
-	leftType := left.left.operator.Type
-	rightType := right.left.operator.Type
+	leftType := left.operator.Type
+	rightType := right.operator.Type
 	fmt.Fprintf(os.Stderr, "TypeL: %v TypeR: %v\n", leftType, rightType)
+	fmt.Fprintf(os.Stderr, "L: %v R: %v\n", left, right)
 
 	if leftType == rightType {
 		//evaluate the expressions
