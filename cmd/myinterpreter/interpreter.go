@@ -182,10 +182,14 @@ func isFloatVal(val any) (bool, float64) {
 func (interpreter *Interpreter) isEqual(left *Expr, right *Expr) bool {
 	leftType := left.operator.Type
 	rightType := right.operator.Type
+	fmt.Fprintf(os.Stderr, "TypeL: %v TypeR: %v\n", leftType, rightType)
+
 	if leftType == rightType {
 		//evaluate the expressions
 		leftVal := interpreter.evaluate(left)
 		rightVal := interpreter.evaluate(right)
+
+		fmt.Fprintf(os.Stderr, "ValL: %v ValR: %v\n", leftVal, rightVal)
 
 		if leftType == STRING {
 			lString, _ := leftVal.(string)
