@@ -192,13 +192,7 @@ func (interpreter *Interpreter) isEqual(left *Expr, right *Expr) bool {
 
 		fmt.Fprintf(os.Stderr, "ValL: %v ValR: %v\n", leftVal, rightVal)
 
-		if leftType == STRING {
-			lString, _ := leftVal.(string)
-			rString, _ := rightVal.(string)
-			return lString == rString
-		}
-
-		if leftType == NUMBER {
+		if right.left != nil || left.left != nil {
 			lFloat, _ := leftVal.(float64)
 			rFloat, _ := rightVal.(float64)
 			return lFloat == rFloat
