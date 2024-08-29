@@ -181,7 +181,6 @@ func isFloatVal(val any) (bool, float64) {
 
 func (interpreter *Interpreter) isEqual(left *Expr, right *Expr) bool {
 	fmt.Fprintf(os.Stderr, "L: %v R: %v\n", left, right)
-	fmt.Fprintf(os.Stderr, "Right-Left: %v\n", right.left)
 
 	leftVal := interpreter.evaluate(left)
 	rightVal := interpreter.evaluate(right)
@@ -191,8 +190,10 @@ func (interpreter *Interpreter) isEqual(left *Expr, right *Expr) bool {
 	fmt.Fprintf(os.Stderr, "Left-Left Nil check : %v\n", left.left != nil)
 
 	if right.left != nil || left.left != nil {
+		fmt.Fprintf(os.Stderr, "Inside right-left if statement")
 		lFloat, _ := leftVal.(float64)
 		rFloat, _ := rightVal.(float64)
+		fmt.Fprintf(os.Stderr, "RL Statement L: %v R: %v\n", lFloat, rFloat)
 		return lFloat == rFloat
 	}
 
