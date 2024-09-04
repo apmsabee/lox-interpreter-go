@@ -38,7 +38,6 @@ func (interpreter *Interpreter) visitExpr(expr Expr) any {
 		return expr.value
 	case GROUPING:
 		val := interpreter.evaluate(expr.left)
-		//fmt.Fprintf(os.Stderr, "Grouping result: %v, Type: %T\n", val, val)
 		return val
 	case UNARY:
 		right := interpreter.evaluate(expr.right)
@@ -49,12 +48,10 @@ func (interpreter *Interpreter) visitExpr(expr Expr) any {
 			//checkNumberOperand(expr.operator, right)
 			ok, float := isFloatVal(right)
 			if ok {
-				//fmt.Fprintf(os.Stderr, "Returning float val from unary: %v\n", float)
 				return -float
 			}
 			objStr, _ := right.(string)
 			val, _ := strconv.ParseFloat(objStr, 64)
-			//fmt.Fprintf(os.Stderr, "Type: %T, value: %v\n", val, val)
 			return -val
 		}
 	case BINARY:
@@ -85,8 +82,6 @@ func (interpreter *Interpreter) visitExpr(expr Expr) any {
 
 		switch expr.operator.Type {
 		case MINUS:
-			//printBinary(leftVal, rightVal, "-")
-			//fmt.Fprintf(os.Stderr, "Sub result: %v\n", leftVal-rightVal)
 			return leftVal - rightVal
 		case PLUS:
 			//addition and concatenation need to be dealt with
@@ -95,8 +90,6 @@ func (interpreter *Interpreter) visitExpr(expr Expr) any {
 			okR, floatRight := isFloatVal(right)
 			okL, floatLeft := isFloatVal(left)
 			if okR && okL {
-				//printBinary(floatLeft, floatRight, "+")
-				//fmt.Fprintf(os.Stderr, "Sum result: %v\n", floatLeft+floatRight)
 				return floatLeft + floatRight
 			}
 
@@ -123,13 +116,10 @@ func (interpreter *Interpreter) visitExpr(expr Expr) any {
 		case EQUAL_EQUAL:
 			return interpreter.isEqual(expr.left, expr.right)
 		}
-		// 	return nil
 	}
 	return nil
 }
-func printBinary(left any, right any, operator string) {
-	fmt.Fprintf(os.Stderr, "%v %s %v\n", left, operator, right)
-}
+
 func (interpreter *Interpreter) evaluate(expr *Expr) any {
 	return interpreter.visitExpr(*expr)
 }
@@ -185,9 +175,9 @@ func (interpreter *Interpreter) isEqual(left *Expr, right *Expr) bool {
 	leftVal := interpreter.evaluate(left)
 	rightVal := interpreter.evaluate(right)
 
-	fmt.Fprintf(os.Stderr, "ValL: %v ValR: %v\n", leftVal, rightVal)
+	//fmt.Fprintf(os.Stderr, "ValL: %v ValR: %v\n", leftVal, rightVal)
 
-	if right.left != nil || left.left != nil {
+	if right.left != nil || left.left != nil { //should only be nested if a binary/grouping expr, so we can safely assume they are numbers
 		var lFloat, rFloat float64
 
 		if okR, floatR := isFloatVal(rightVal); okR {
@@ -202,18 +192,18 @@ func (interpreter *Interpreter) isEqual(left *Expr, right *Expr) bool {
 			lFloat, _ = leftVal.(float64)
 		}
 
-		fmt.Fprintf(os.Stderr, "RL Statement L: %v R: %v\n", lFloat, rFloat)
+		//fmt.Fprintf(os.Stderr, "RL Statement L: %v R: %v\n", lFloat, rFloat)
 		return lFloat == rFloat
 	}
 
 	return leftVal == rightVal
 }
 
-// type RuntimeError struct {
-// 	token   Token
-// 	message string
-// }
+type RuntimeError struct {
+	token   Token
+	message string
+}
 
-// func runtimeError(token Token, message string) RuntimeError {
-// 	return RuntimeError{token: token, message: message}
-// }
+func runtimeError(token Token, message string) RuntimeError {
+	return RuntimeError{token: token, message: message}
+}
