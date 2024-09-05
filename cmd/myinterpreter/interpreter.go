@@ -154,8 +154,9 @@ func checkNumberOperand(operator Token, operand any) {
 		if _, err := strconv.ParseFloat(objStr, 64); err == nil {
 			return
 		}
+
+		panic(runtimeError(operator, "Operand must be a number"))
 	}
-	panic(runtimeError(operator, "Operand must be a number"))
 }
 
 // func checkNumberOperands(operator Token, left any, right any) {
