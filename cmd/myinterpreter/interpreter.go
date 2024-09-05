@@ -45,7 +45,7 @@ func (interpreter *Interpreter) visitExpr(expr Expr) any {
 		case BANG:
 			return !isTruthy(right)
 		case MINUS:
-			//checkNumberOperand(expr.operator, right)
+			checkNumberOperand(expr.operator, right)
 			ok, float := isFloatVal(right)
 			if ok {
 				return -float
@@ -149,14 +149,14 @@ func isFloatVal(val any) (bool, float64) {
 	return false, 0
 }
 
-// func checkNumberOperand(operator Token, operand any) {
-// 	if objStr, ok := operand.(string); ok {
-// 		if _, err := strconv.ParseFloat(objStr, 64); err == nil {
-// 			return
-// 		}
-// 	}
-// 	panic(runtimeError(operator, "Operand must be a number"))
-// }
+func checkNumberOperand(operator Token, operand any) {
+	if objStr, ok := operand.(string); ok {
+		if _, err := strconv.ParseFloat(objStr, 64); err == nil {
+			return
+		}
+	}
+	panic(runtimeError(operator, "Operand must be a number"))
+}
 
 // func checkNumberOperands(operator Token, left any, right any) {
 // 	_, okl := left.(float64)
