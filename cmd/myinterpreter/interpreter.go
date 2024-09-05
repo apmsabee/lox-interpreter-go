@@ -160,6 +160,8 @@ func (interpeter *Interpreter) checkNumberOperand(operator Token, operand any) b
 		interpeter.exitCode = 70
 		return false
 		//panic(runtimeError(operator, "Operand must be a number"))
+	} else if _, ok := operand.(float64); ok {
+		return true
 	}
 	interpeter.exitCode = 70
 	return false
