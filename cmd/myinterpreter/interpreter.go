@@ -55,7 +55,7 @@ func (interpreter *Interpreter) visitExpr(expr Expr) any {
 				val, _ := strconv.ParseFloat(objStr, 64)
 				return -val
 			}
-			return nil
+			return "nil"
 		}
 	case BINARY:
 		//this is a bit of a mess, but it seems like number literals are stored as strings,
