@@ -7,6 +7,7 @@ import (
 )
 
 type Interpreter struct {
+	exitCode int
 }
 
 func (interpreter *Interpreter) interpret(expression Expr) {
@@ -45,7 +46,7 @@ func (interpreter *Interpreter) visitExpr(expr Expr) any {
 		case BANG:
 			return !isTruthy(right)
 		case MINUS:
-			checkNumberOperand(expr.operator, right)
+			interpreter.checkNumberOperand(expr.operator, right)
 			ok, float := isFloatVal(right)
 			if ok {
 				return -float
@@ -149,13 +150,13 @@ func isFloatVal(val any) (bool, float64) {
 	return false, 0
 }
 
-func checkNumberOperand(operator Token, operand any) {
+func (interpeter *Interpreter) checkNumberOperand(operator Token, operand any) {
 	if objStr, ok := operand.(string); ok {
 		if _, err := strconv.ParseFloat(objStr, 64); err == nil {
 			return
 		}
-
-		panic(runtimeError(operator, "Operand must be a number"))
+		interpeter.exitCode = 70
+		//panic(runtimeError(operator, "Operand must be a number"))
 	}
 }
 

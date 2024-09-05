@@ -83,10 +83,10 @@ func main() {
 			fmt.Fprintf(os.Stderr, "Parsing error: %v\n", err)
 		}
 
-		interpreter := Interpreter{}
+		interpreter := Interpreter{exitCode: 0}
 		interpreter.interpret(*res)
 
-		os.Exit(parser.exitCode)
+		os.Exit(interpreter.exitCode)
 	default:
 		fmt.Fprintf(os.Stderr, "Unknown command: %s\n", config.command)
 		os.Exit(1)
