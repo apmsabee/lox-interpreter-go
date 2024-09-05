@@ -46,14 +46,16 @@ func (interpreter *Interpreter) visitExpr(expr Expr) any {
 		case BANG:
 			return !isTruthy(right)
 		case MINUS:
-			interpreter.checkNumberOperand(expr.operator, right)
-			ok, float := isFloatVal(right)
-			if ok {
-				return -float
+			if interpreter.checkNumberOperand(expr.operator, right) {
+				ok, float := isFloatVal(right)
+				if ok {
+					return -float
+				}
+				objStr, _ := right.(string)
+				val, _ := strconv.ParseFloat(objStr, 64)
+				return -val
 			}
-			objStr, _ := right.(string)
-			val, _ := strconv.ParseFloat(objStr, 64)
-			return -val
+			return nil
 		}
 	case BINARY:
 		//this is a bit of a mess, but it seems like number literals are stored as strings,
@@ -150,14 +152,17 @@ func isFloatVal(val any) (bool, float64) {
 	return false, 0
 }
 
-func (interpeter *Interpreter) checkNumberOperand(operator Token, operand any) {
+func (interpeter *Interpreter) checkNumberOperand(operator Token, operand any) bool {
 	if objStr, ok := operand.(string); ok {
 		if _, err := strconv.ParseFloat(objStr, 64); err == nil {
-			return
+			return true
 		}
 		interpeter.exitCode = 70
+		return false
 		//panic(runtimeError(operator, "Operand must be a number"))
 	}
+	interpeter.exitCode = 70
+	return false
 }
 
 // func checkNumberOperands(operator Token, left any, right any) {
